@@ -1,0 +1,61 @@
+openapi: 3.0.0
+info:
+  title: Stats API
+  description: This API receives reading events from a smartwatch
+  contact:
+    email: ahammermuller@my.bcit.ca
+  version: 1.0.0
+paths: 
+  /stats: 
+    get: 
+      summary: Gets the event stats 
+      operationId: app.get_stats 
+      description: Gets Distance Covered and Running Pace processed statistics 
+      responses: 
+        '200': 
+          description: Successfully returned a list of distances covered events 
+          content: 
+            application/json: 
+              schema: 
+                type: object
+                items: 
+                  $ref: '#/components/schemas/ReadingStats' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string 
+components: 
+  schemas: 
+    ReadingStats: 
+      required: 
+        - total_distance_covered
+        - average_pace
+        - max_elevation
+        - num_distance_events_received
+        - num_pace_events_received
+        - last_timestamp
+      properties:
+        total_distance_covered:
+          type: number
+          example: 1234.56
+        average_pace:
+          type: number
+          example: 4.5
+        max_elevation:
+          type: integer
+          example: 800
+        num_distance_events_received:
+          type: number
+          example: 500000
+        num_pace_events_received:
+          type: number
+          example: 500000
+        last_timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33Z

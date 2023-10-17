@@ -1,0 +1,137 @@
+---
+openapi: 3.0.0
+info:
+  title: Running API
+  description: This API receives reading events from a smartwatch
+  contact:
+    email: ahammermuller@my.bcit.ca
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: devices
+  description: Operations available to smartwatches
+paths:
+  /readings/distance:
+    get: 
+      tags: 
+      - devices 
+      summary: gets new distance covered readings 
+      operationId: app.get_distance_covered_reading
+      description: Gets distance covered readings added after a timestamp 
+      parameters: 
+        - name: timestamp 
+          in: query 
+          description: Limits the number of items on a page 
+          schema: 
+            type: string 
+            format: date-time 
+            example: 2016-08-29T09:12:33Z
+      responses: 
+        '200': 
+          description: Successfully returned a list of distance covered events 
+          content: 
+            application/json: 
+              schema: 
+                type: array 
+                items:
+                  $ref: '#/components/schemas/DistanceCoveredReading' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string
+  /readings/pace:
+    get: 
+      tags: 
+      - devices 
+      summary: gets new running pace readings 
+      operationId: app.get_running_pace_reading
+      description: Gets running pace readings added after a timestamp 
+      parameters: 
+        - name: timestamp 
+          in: query 
+          description: Limits the number of items on a page 
+          schema: 
+            type: string 
+            format: date-time 
+            example: 2016-08-29T09:12:33Z
+      responses: 
+        '200': 
+          description: Successfully returned a list of running pace events 
+          content: 
+            application/json: 
+              schema: 
+                type: array 
+                items:
+                  $ref: '#/components/schemas/RunningPaceReading' 
+        '400': 
+          description: Invalid request 
+          content: 
+            application/json: 
+              schema: 
+                type: object 
+                properties: 
+                  message: 
+                    type: string             
+components:
+  schemas:
+    DistanceCoveredReading:
+      required:
+      - athlete_id
+      - device_id
+      - distance
+      - distance_timestamp
+      type: object
+      properties:
+        athlete_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        device_id:
+          type: string
+          example: A12345
+        distance:
+          type: number
+          example: 1.56
+        distance_timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33Z
+    RunningPaceReading:
+      required:
+      - athlete_id
+      - average_pace
+      - elevation
+      - location
+      - pace
+      - pace_timestamp
+      type: object
+      properties:
+        athlete_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        pace:
+          type: number
+          example: 4.5
+        location:
+          type: string
+          example: "-123.56789, 48.12345"
+        elevation:
+          type: integer
+          example: 800
+        pace_timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33Z
+        average_pace:
+          type: number
+          example: 2.5

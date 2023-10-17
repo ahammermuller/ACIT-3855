@@ -1,0 +1,107 @@
+---
+openapi: 3.0.0
+info:
+  title: Running API
+  description: This API receives reading events from a smartwatch
+  contact:
+    email: ahammermuller@my.bcit.ca
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: devices
+  description: Operations available to smartwatches
+paths:
+  /readings/distance:
+    post:
+      tags:
+      - devices
+      summary: reports distance covered by athlete
+      description: Adds a new distance covered by the athlete to the system
+      operationId: app.report_distance_covered_reading
+      requestBody:
+        description: Reading item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DistanceCoveredReading'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: invalid input parameter
+  /readings/pace:
+    post:
+      tags:
+      - devices
+      summary: reports running pace
+      description: Adds a new running pace to the system
+      operationId: app.report_running_pace_reading
+      requestBody:
+        description: Reading item to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RunningPaceReading'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: invalid input parameter
+components:
+  schemas:
+    DistanceCoveredReading:
+      required:
+      - athlete_id
+      - device_id
+      - distance
+      - distance_timestamp
+      type: object
+      properties:
+        athlete_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        device_id:
+          type: string
+          example: A12345
+        distance:
+          type: number
+          example: 1.56
+        distance_timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33Z
+    RunningPaceReading:
+      required:
+      - athlete_id
+      - average_pace
+      - elevation
+      - location
+      - pace
+      - pace_timestamp
+      type: object
+      properties:
+        athlete_id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+        pace:
+          type: number
+          example: 4.5
+        location:
+          type: string
+          example: "-123.56789, 48.12345"
+        elevation:
+          type: integer
+          example: 800
+        pace_timestamp:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33Z
+        average_pace:
+          type: number
+          example: 2.5

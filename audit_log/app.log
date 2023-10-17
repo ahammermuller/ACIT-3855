@@ -1,0 +1,15 @@
+2023-10-13 18:35:38,233 - basicLogger - INFO - Retrieving DC at index 1
+2023-10-13 18:36:29,313 - basicLogger - INFO - Retrieving BP at index 1
+2023-10-13 18:36:34,628 - basicLogger - INFO - Retrieving BP at index 10
+2023-10-17 10:04:16,990 - basicLogger - INFO - Retrieving DC at index 1
+2023-10-17 10:04:27,472 - basicLogger - INFO - Retrieving DC at index 100
+2023-10-17 10:04:42,354 - basicLogger - INFO - Retrieving DC at index 150
+2023-10-17 10:05:01,730 - basicLogger - INFO - Retrieving DC at index 149
+2023-10-17 10:06:10,449 - basicLogger - INFO - Retrieving DC at index 500
+2023-10-17 10:06:21,278 - basicLogger - INFO - Retrieving DC at index 1
+2023-10-17 10:06:31,070 - basicLogger - INFO - Retrieving DC at index 100
+2023-10-17 10:06:40,663 - basicLogger - INFO - Retrieving DC at index 150
+2023-10-17 10:07:41,672 - basicLogger - INFO - Retrieving DC at index 150
+2023-10-17 10:07:51,278 - basicLogger - INFO - Retrieving DC at index 99
+2023-10-17 10:08:00,493 - basicLogger - INFO - Retrieving BP at index 10
+2023-10-17 10:08:06,945 - basicLogger - INFO - Retrieving BP at index 150
