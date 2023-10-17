@@ -54,7 +54,7 @@ services:
   processing: 
     image: processing:latest
     ports:
-      - "8070:8070"
+      - "8100:8100"
     network_mode: "host"
     depends_on:
       - storage
