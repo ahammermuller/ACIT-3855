@@ -1,0 +1,2 @@
+connexion==2.14.2
+pykafka==2.8.0
