@@ -62,7 +62,7 @@ services:
   audit_log:
     image: audit_log:latest
     ports:
-      - "8110:8110"
+      - "8070:8070"
     depends_on:
       - kafka
 
