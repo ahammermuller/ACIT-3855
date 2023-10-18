@@ -53,8 +53,6 @@ services:
 
   processing: 
     image: processing:latest
-    ports:
-      - "8100:8100"
     network_mode: "host"
     depends_on:
       - storage
