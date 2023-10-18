@@ -4,7 +4,7 @@ import mysql.connector
 config = {
     "user": "user",
     "password": "password",
-    "host": "ec2-52-14-223-100.us-east-2.compute.amazonaws.com",
+    "host": "18.219.140.116",
     "database": "events",
     "raise_on_warnings": True,
 }

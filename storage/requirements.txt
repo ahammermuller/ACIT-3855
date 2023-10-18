@@ -1,3 +1,4 @@
 connexion==2.14.2
 SQLAlchemy==1.4.49
 pykafka==2.8.0
+pymysql==1.1.0

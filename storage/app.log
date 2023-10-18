@@ -758,3 +758,11 @@
 2023-10-17 10:04:23,913 - basicLogger - INFO - Stored event2 to the database: {'athlete_id': '2aabd31f-a595-46db-a143-09680f6ae7b6', 'average_pace': 2.5, 'elevation': 8940, 'location': '-123.56789, 48.12345', 'pace': 87.0, 'pace_timestamp': '2016-08-29T09:12:33Z', 'trace_id': '6329e531-d99e-4e14-9ee7-25ca0cace380'}
 2023-10-17 10:08:23,367 - basicLogger - INFO - Connecting to DB. Hostname: ec2-52-14-223-100.us-east-2.compute.amazonaws.com, Port: 3306
 2023-10-17 10:08:23,414 - basicLogger - INFO - Connecting to DB. Hostname: ec2-52-14-223-100.us-east-2.compute.amazonaws.com, Port: 3306
+2023-10-17 18:32:48,656 - basicLogger - INFO - Connecting to DB. Hostname: 18.219.140.116, Port: 3306
+2023-10-17 18:32:48,733 - basicLogger - INFO - Connecting to DB. Hostname: 18.219.140.116, Port: 3306
+2023-10-17 18:34:45,177 - basicLogger - INFO - Connecting to DB. Hostname: 18.219.140.116, Port: 3306
+2023-10-17 18:34:45,230 - basicLogger - INFO - Connecting to DB. Hostname: 18.219.140.116, Port: 3306
+2023-10-17 18:36:43,881 - basicLogger - INFO - Connecting to DB. Hostname: 18.219.140.116, Port: 3306
+2023-10-17 18:36:43,919 - basicLogger - INFO - Connecting to DB. Hostname: 18.219.140.116, Port: 3306
+2023-10-17 18:41:04,380 - basicLogger - INFO - Connecting to DB. Hostname: 18.219.140.116, Port: 3306
+2023-10-17 18:41:04,420 - basicLogger - INFO - Connecting to DB. Hostname: 18.219.140.116, Port: 3306
