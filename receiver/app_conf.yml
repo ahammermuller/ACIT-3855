@@ -1,4 +1,4 @@
 events: 
-  hostname: ec2-52-14-223-100.us-east-2.compute.amazonaws.com
+  hostname: 18.219.140.116
   port: 9092 
   topic: events

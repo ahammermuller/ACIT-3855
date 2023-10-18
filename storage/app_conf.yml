@@ -2,11 +2,11 @@ version: 1
 datastore:
   user: user
   password: password
-  hostname: ec2-52-14-223-100.us-east-2.compute.amazonaws.com
+  hostname: 18.219.140.116
   port: 3306
   db: events
 
 events: 
-  hostname: ec2-52-14-223-100.us-east-2.compute.amazonaws.com
+  hostname: 18.219.140.116
   port: 9092 
   topic: events
