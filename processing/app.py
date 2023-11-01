@@ -11,9 +11,6 @@ import json
 import datetime
 from flask_cors import CORS, cross_origin
 
-app = connexion.FlaskApp(__name__, specification_dir='') 
-CORS(app.app) 
-app.app.config['CORS_HEADERS'] = 'Content-Type'
 
 scheduler = BackgroundScheduler(timezone=pytz.utc)
 scheduler.start()
@@ -183,6 +180,12 @@ def init_scheduler():
                   'interval', 
                   seconds=app_config['scheduler']['period_sec']) 
     sched.start()
+
+
+app = connexion.FlaskApp(__name__, specification_dir='') 
+CORS(app.app) 
+app.app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 if __name__ == "__main__":
     init_scheduler() 
