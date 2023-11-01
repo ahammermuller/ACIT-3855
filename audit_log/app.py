@@ -5,6 +5,12 @@ import logging
 import logging.config
 import connexion
 from connexion import NoContent
+from flask_cors import CORS, cross_origin
+
+app = connexion.FlaskApp(__name__, specification_dir='') 
+CORS(app.app) 
+app.app.config['CORS_HEADERS'] = 'Content-Type'
+
 
 with open('app_conf.yml', 'r') as f: 
     app_config = yaml.safe_load(f.read())
