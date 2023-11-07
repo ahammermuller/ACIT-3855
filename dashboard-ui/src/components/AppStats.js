@@ -31,7 +31,7 @@ export default function AppStats() {
     } else if (isLoaded === true){
         return(
             <div>
-                <h1>Latest Stats</h1>
+                <h1>Latest Stat</h1>
                 <table className={"StatsTable"}>
 					<tbody>
 						<tr>
