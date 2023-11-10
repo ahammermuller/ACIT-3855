@@ -7,6 +7,7 @@ import uuid
 import datetime
 import json
 from pykafka import KafkaClient
+import time
 
 
 with open('app_conf.yml', 'r') as f: 
@@ -20,6 +21,35 @@ with open('log_conf.yml', 'r') as f:
 
 logger = logging.getLogger('basicLogger')
 
+# Connect to kafka with retries
+def connect_kafka():
+    hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
+
+    max_retries = 3
+    retry_interval = 5
+
+    current_retry_count = 0
+    connected = False
+
+    while current_retry_count < max_retries and not connected:
+        try:
+            client = KafkaClient(hosts=hostname)
+            topic = client.topics[str.encode(app_config["events"]["topic"])]
+            connected = True
+        except Exception as e:
+            logger.error(f"Connection to Kafka failed")
+            time.sleep(retry_interval)
+            current_retry_count += 1
+
+    if not connected:
+        raise Exception("Failed to connect to Kafka after max retries")
+
+    return topic
+
+kafka_connection = connect_kafka()
+kafka_topic = kafka_connection["kafka_topic"]
+
+
 def report_distance_covered_reading(body):
     
     event_name = "eventstore1"
@@ -28,9 +58,10 @@ def report_distance_covered_reading(body):
 
     logger.info(f"Received event {event_name} request with a trace id of {trace_id}")
     
-    client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
-    topic = client.topics[str.encode(app_config['events']['topic'])] 
-    producer = topic.get_sync_producer()
+    # client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
+    # topic = client.topics[str.encode(app_config['events']['topic'])] 
+    #producer = topic.get_sync_producer()
+    producer = kafka_topic.get_sync_producer()
     msg = { "type": "distance_covered", 
            "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), 
            "payload": body } 
@@ -49,9 +80,10 @@ def report_running_pace_reading(body):
     body['trace_id'] = trace_id
     logger.info(f"Received event {event_name} request with a trace id of {trace_id}")
 
-    client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}") 
-    topic = client.topics[str.encode(app_config['events']['topic'])] 
-    producer = topic.get_sync_producer()
+    #client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}") 
+    #topic = client.topics[str.encode(app_config['events']['topic'])] 
+    # producer = topic.get_sync_producer()
+    producer = kafka_topic.get_sync_producer()
     msg = { "type": "running_pace", 
            "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), 
            "payload": body } 
