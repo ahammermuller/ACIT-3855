@@ -117,7 +117,7 @@ components:
       - elevation
       - location
       - pace
-      - pce_timestamp
+      - pace_timestamp
       - end_timestamp
       type: object
       properties:

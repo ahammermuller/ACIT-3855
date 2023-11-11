@@ -62,7 +62,7 @@ DB_SESSION = sessionmaker(bind=DB_ENGINE)
 def get_distance_covered_reading(distance_timestamp, end_timestamp): 
 
     """ Gets new distance covered readings after the timestamp """
-    logger.info(f"GET request for distance covered readings with timestamp: {distance_timestamp}")
+    logger.info(f"GET request for distance covered readings between {distance_timestamp} and {end_timestamp}")
     
     session = DB_SESSION() 
     start_timestamp_datetime = datetime.datetime.strptime(distance_timestamp, "%Y-%m-%dT%H:%M:%SZ") 
@@ -106,7 +106,7 @@ def get_distance_covered_reading(distance_timestamp, end_timestamp):
 
 def get_running_pace_reading(pace_timestamp, end_timestamp): 
     """ Gets new running pace readings after the timestamp """ 
-    logger.info(f"GET request for running pace readings with timestamp: {pace_timestamp}")
+    logger.info(f"GET request for running pace readings  between {pace_timestamp} and {end_timestamp}")
 
     session = DB_SESSION() 
     
