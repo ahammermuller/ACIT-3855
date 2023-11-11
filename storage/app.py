@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from distance_covered import DistanceCoveredReading
 from running_pace import RunningPaceReading
 from sqlalchemy import create_engine
+from sqlalchemy import and_
 import yaml
 import logging.config
 import datetime
@@ -12,6 +13,7 @@ import json
 from pykafka import KafkaClient
 from pykafka.common import OffsetType
 from threading import Thread
+import time
 
 
 with open('app_conf.yml', 'r') as f: 
@@ -57,20 +59,24 @@ DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
 #     return NoContent, 201
 
-def get_distance_covered_reading(timestamp): 
-    """ Gets new distance covered readings after the timestamp """ 
-    logger.info(f"GET request for distance covered readings with timestamp: {timestamp}")
+def get_distance_covered_reading(distance_timestamp, end_timestamp): 
+
+    """ Gets new distance covered readings after the timestamp """
+    logger.info(f"GET request for distance covered readings with timestamp: {distance_timestamp}")
     
     session = DB_SESSION() 
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    readings = session.query(DistanceCoveredReading).filter(DistanceCoveredReading.date_created >= timestamp_datetime) 
+    start_timestamp_datetime = datetime.datetime.strptime(distance_timestamp, "%Y-%m-%dT%H:%M:%SZ") 
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+
+    readings = session.query(DistanceCoveredReading).filter(
+        and_(DistanceCoveredReading.date_created >= start_timestamp_datetime, DistanceCoveredReading.date_created < end_timestamp_datetime)) 
     
     results_list = [] 
     for reading in readings: 
         results_list.append(reading.to_dict()) 
     
     session.close() 
-    logger.info("Query for Distance Covered readings after %s returns %d results" % (timestamp, len(results_list))) 
+    logger.info("Query for Distance Covered readings after %s returns %d results" % (end_timestamp, len(results_list))) 
     
     print(results_list)
 
@@ -98,20 +104,25 @@ def get_distance_covered_reading(timestamp):
 
 #     return NoContent, 201
 
-def get_running_pace_reading(timestamp): 
+def get_running_pace_reading(pace_timestamp, end_timestamp): 
     """ Gets new running pace readings after the timestamp """ 
-    logger.info(f"GET request for running pace readings with timestamp: {timestamp}")
-    session = DB_SESSION() 
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    logger.info(f"GET request for running pace readings with timestamp: {pace_timestamp}")
 
-    readings = session.query(RunningPaceReading).filter(RunningPaceReading.date_created >= timestamp_datetime) 
+    session = DB_SESSION() 
+    
+    start_timestamp_datetime = datetime.datetime.strptime(pace_timestamp, "%Y-%m-%dT%H:%M:%SZ") 
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+
+
+    readings = session.query(RunningPaceReading).filter(
+        and_(RunningPaceReading.date_created >= start_timestamp_datetime, RunningPaceReading.date_created < end_timestamp_datetime)) 
     
     results_list = [] 
     for reading in readings: 
         results_list.append(reading.to_dict()) 
     
     session.close() 
-    logger.info("Query for Running Pace readings after %s returns %d results" % (timestamp, len(results_list))) 
+    logger.info("Query for Running Pace readings after %s returns %d results" % (end_timestamp, len(results_list))) 
     
     return results_list, 200
 
@@ -126,48 +137,67 @@ def process_messages():
     # (i.e., it doesn't read all the old messages from the history in the message queue). 
     consumer = topic.get_simple_consumer(consumer_group=b'event_group', reset_offset_on_start=False, auto_offset_reset=OffsetType.LATEST) 
     
-    # This is blocking - it will wait for a new message 
-    for msg in consumer: 
-        msg_str = msg.value.decode('utf-8') 
-        msg = json.loads(msg_str) 
-        logger.info("Message: %s" % msg) 
-        
-        payload = msg["payload"] 
-        
-        if msg["type"] == "distance_covered":
-            # Store the event2 (i.e., the payload) to the DB 
-            dc = DistanceCoveredReading(payload['trace_id'],
+    #retirve connect to kafka
+    max_retries = 3
+    retry_interval = 5
+
+    current_retry_count = 0
+    connected = False
+
+    while current_retry_count < max_retries and not connected:
+        try:
+            client = KafkaClient(hosts=hostname)
+            topic = client.topics[str.encode(app_config["events"]["topic"])]
+            connected = True
+        except Exception as e:
+            logger.error(f"Connection to Kafka failed")
+            time.sleep(retry_interval)
+            current_retry_count += 1
+
+    if connected:
+        # This is blocking - it will wait for a new message 
+        for msg in consumer: 
+            msg_str = msg.value.decode('utf-8') 
+            msg = json.loads(msg_str) 
+            logger.info("Message: %s" % msg) 
+            
+            payload = msg["payload"] 
+            
+            if msg["type"] == "distance_covered":
+                # Store the event2 (i.e., the payload) to the DB 
+                dc = DistanceCoveredReading(payload['trace_id'],
+                                            payload['athlete_id'],
+                                            payload['device_id'],
+                                            payload['distance'],
+                                            payload['distance_timestamp'])
+                
+                session = DB_SESSION()
+                session.add(dc)
+                session.commit()
+                session.close()
+                logger.info("Stored event1 to the database: %s" % payload)
+
+            elif msg["type"] == "running_pace":
+                # Store the event2 (i.e., the payload) to the DB 
+                rp = RunningPaceReading(payload['trace_id'],
                                         payload['athlete_id'],
-                                        payload['device_id'],
-                                        payload['distance'],
-                                        payload['distance_timestamp'])
-            
-            session = DB_SESSION()
-            session.add(dc)
-            session.commit()
-            session.close()
-            logger.info("Stored event1 to the database: %s" % payload)
+                                        payload['average_pace'],
+                                        payload['elevation'],
+                                        payload['location'],
+                                        payload['pace'],
+                                        payload['pace_timestamp'])
+                
+                session = DB_SESSION()
+                session.add(rp)
+                session.commit()
+                session.close()
+                logger.info("Stored event2 to the database: %s" % payload)
 
-        elif msg["type"] == "running_pace":
-            # Store the event2 (i.e., the payload) to the DB 
-            rp = RunningPaceReading(payload['trace_id'],
-                                    payload['athlete_id'],
-                                    payload['average_pace'],
-                                    payload['elevation'],
-                                    payload['location'],
-                                    payload['pace'],
-                                    payload['pace_timestamp'])
-            
-            session = DB_SESSION()
-            session.add(rp)
-            session.commit()
-            session.close()
-            logger.info("Stored event2 to the database: %s" % payload)
-
-             
-        # Commit the new message as being read 
-        consumer.commit_offsets()
-
+                
+            # Commit the new message as being read 
+            consumer.commit_offsets()
+    else:
+        logger.error(f"Failed to connect to Kafka after {max_retries} retries.")
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
