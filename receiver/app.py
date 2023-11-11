@@ -34,7 +34,6 @@ def connect_kafka():
     while current_retry_count < max_retries and not connected:
         try:
             client = KafkaClient(hosts=hostname)
-            topic = client.topics[str.encode(app_config["events"]["topic"])]
             connected = True
         except Exception as e:
             logger.error(f"Connection to Kafka failed")
@@ -44,10 +43,7 @@ def connect_kafka():
     if not connected:
         raise Exception("Failed to connect to Kafka after max retries")
 
-    return topic
-
-kafka_connection = connect_kafka()
-kafka_topic = kafka_connection["kafka_topic"]
+    return client
 
 
 def report_distance_covered_reading(body):
@@ -59,9 +55,9 @@ def report_distance_covered_reading(body):
     logger.info(f"Received event {event_name} request with a trace id of {trace_id}")
     
     # client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
-    # topic = client.topics[str.encode(app_config['events']['topic'])] 
-    #producer = topic.get_sync_producer()
-    producer = kafka_topic.get_sync_producer()
+    client = connect_kafka()
+    topic = client.topics[str.encode(app_config["events"]["topic"])]
+    producer = topic.get_sync_producer()
     msg = { "type": "distance_covered", 
            "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), 
            "payload": body } 
@@ -81,9 +77,10 @@ def report_running_pace_reading(body):
     logger.info(f"Received event {event_name} request with a trace id of {trace_id}")
 
     #client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}") 
-    #topic = client.topics[str.encode(app_config['events']['topic'])] 
-    # producer = topic.get_sync_producer()
-    producer = kafka_topic.get_sync_producer()
+    client = connect_kafka()
+    topic = client.topics[str.encode(app_config["events"]["topic"])]
+    producer = topic.get_sync_producer()
+
     msg = { "type": "running_pace", 
            "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), 
            "payload": body } 
