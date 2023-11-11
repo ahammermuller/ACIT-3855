@@ -142,7 +142,7 @@ def process_messages():
             connected = True
             logger.info("Successfully connected to Kafka.")
         except Exception as e:
-            logger.error(f"Connection to Kafka failed after {max_retries}")
+            logger.error(f"Connection to Kafka failed after {current_retry_count}")
             time.sleep(retry_interval)
             current_retry_count += 1
 

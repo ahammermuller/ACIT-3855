@@ -24,9 +24,9 @@ logger = logging.getLogger('basicLogger')
     # Connect to kafka with retries
 
 hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
-
-max_retries = 3
-retry_interval = 5
+events_config = app_config["events"]
+max_retries = 10
+retry_interval = events_config["sleep_time"]
 
 current_retry_count = 0
 connected = False
@@ -36,8 +36,9 @@ while current_retry_count < max_retries and not connected:
         client = KafkaClient(hosts=hostname)
         topic = client.topics[str.encode(app_config["events"]["topic"])]        
         connected = True
+        logger.info("Successfully connected to Kafka.")        
     except Exception as e:
-        logger.error(f"Connection to Kafka failed")
+        logger.error(f"Connection to Kafka failed after {current_retry_count}")
         time.sleep(retry_interval)
         current_retry_count += 1
 
