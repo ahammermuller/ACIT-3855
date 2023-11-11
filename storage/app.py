@@ -135,7 +135,6 @@ def process_messages():
     
     # Create a consume on a consumer group, that only reads new messages (uncommitted messages) when the service re-starts 
     # (i.e., it doesn't read all the old messages from the history in the message queue). 
-    consumer = topic.get_simple_consumer(consumer_group=b'event_group', reset_offset_on_start=False, auto_offset_reset=OffsetType.LATEST) 
     
     #retirve connect to kafka
     max_retries = 3
@@ -150,54 +149,53 @@ def process_messages():
             topic = client.topics[str.encode(app_config["events"]["topic"])]
             connected = True
         except Exception as e:
-            logger.error(f"Connection to Kafka failed")
+            logger.error(f"Connection to Kafka failed after {max_retries}")
             time.sleep(retry_interval)
             current_retry_count += 1
 
-    if connected:
+    consumer = topic.get_simple_consumer(consumer_group=b'event_group', reset_offset_on_start=False, auto_offset_reset=OffsetType.LATEST) 
+
         # This is blocking - it will wait for a new message 
-        for msg in consumer: 
-            msg_str = msg.value.decode('utf-8') 
-            msg = json.loads(msg_str) 
-            logger.info("Message: %s" % msg) 
+    for msg in consumer: 
+        msg_str = msg.value.decode('utf-8') 
+        msg = json.loads(msg_str) 
+        logger.info("Message: %s" % msg) 
             
-            payload = msg["payload"] 
+        payload = msg["payload"] 
             
-            if msg["type"] == "distance_covered":
-                # Store the event2 (i.e., the payload) to the DB 
-                dc = DistanceCoveredReading(payload['trace_id'],
-                                            payload['athlete_id'],
-                                            payload['device_id'],
-                                            payload['distance'],
-                                            payload['distance_timestamp'])
-                
-                session = DB_SESSION()
-                session.add(dc)
-                session.commit()
-                session.close()
-                logger.info("Stored event1 to the database: %s" % payload)
-
-            elif msg["type"] == "running_pace":
-                # Store the event2 (i.e., the payload) to the DB 
-                rp = RunningPaceReading(payload['trace_id'],
+        if msg["type"] == "distance_covered":
+            # Store the event2 (i.e., the payload) to the DB 
+            dc = DistanceCoveredReading(payload['trace_id'],
                                         payload['athlete_id'],
-                                        payload['average_pace'],
-                                        payload['elevation'],
-                                        payload['location'],
-                                        payload['pace'],
-                                        payload['pace_timestamp'])
+                                        payload['device_id'],
+                                        payload['distance'],
+                                        payload['distance_timestamp'])
                 
-                session = DB_SESSION()
-                session.add(rp)
-                session.commit()
-                session.close()
-                logger.info("Stored event2 to the database: %s" % payload)
+            session = DB_SESSION()
+            session.add(dc)
+            session.commit()
+            session.close()
+            logger.info("Stored event1 to the database: %s" % payload)
+
+        elif msg["type"] == "running_pace":
+            # Store the event2 (i.e., the payload) to the DB 
+            rp = RunningPaceReading(payload['trace_id'],
+                                    payload['athlete_id'],
+                                    payload['average_pace'],
+                                    payload['elevation'],
+                                    payload['location'],
+                                    payload['pace'],
+                                    payload['pace_timestamp'])
+                
+            session = DB_SESSION()
+            session.add(rp)
+            session.commit()
+            session.close()
+            logger.info("Stored event2 to the database: %s" % payload)
 
                 
-            # Commit the new message as being read 
-            consumer.commit_offsets()
-    else:
-        logger.error(f"Failed to connect to Kafka after {max_retries} retries.")
+        # Commit the new message as being read 
+        consumer.commit_offsets()
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
