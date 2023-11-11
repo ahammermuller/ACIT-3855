@@ -127,7 +127,7 @@ def populate_stats():
     default_stats['max_elevation'] = max_elevation
     default_stats['num_distance_events_received'] = num_distance_events_received
     default_stats['num_pace_events_received'] = num_pace_events_received
-    default_stats['last_timestamp'] = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    default_stats['last_timestamp'] = current_timestamp
 
 
     # Write the updated statistics to the JSON file
