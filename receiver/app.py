@@ -21,29 +21,28 @@ with open('log_conf.yml', 'r') as f:
 
 logger = logging.getLogger('basicLogger')
 
-# Connect to kafka with retries
-def connect_kafka():
-    hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
+    # Connect to kafka with retries
 
-    max_retries = 3
-    retry_interval = 5
+hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
 
-    current_retry_count = 0
-    connected = False
+max_retries = 3
+retry_interval = 5
 
-    while current_retry_count < max_retries and not connected:
-        try:
-            client = KafkaClient(hosts=hostname)
-            connected = True
-        except Exception as e:
-            logger.error(f"Connection to Kafka failed")
-            time.sleep(retry_interval)
-            current_retry_count += 1
+current_retry_count = 0
+connected = False
 
-    if not connected:
-        raise Exception("Failed to connect to Kafka after max retries")
+while current_retry_count < max_retries and not connected:
+    try:
+        client = KafkaClient(hosts=hostname)
+        topic = client.topics[str.encode(app_config["events"]["topic"])]        
+        connected = True
+    except Exception as e:
+        logger.error(f"Connection to Kafka failed")
+        time.sleep(retry_interval)
+        current_retry_count += 1
 
-    return client
+if not connected:
+    raise Exception(f"Failed to connect to Kafka after {max_retries} retries")
 
 
 def report_distance_covered_reading(body):
@@ -55,8 +54,8 @@ def report_distance_covered_reading(body):
     logger.info(f"Received event {event_name} request with a trace id of {trace_id}")
     
     # client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
-    client = connect_kafka()
-    topic = client.topics[str.encode(app_config["events"]["topic"])]
+    # topic = client.topics[str.encode(app_config["events"]["topic"])]
+
     producer = topic.get_sync_producer()
     msg = { "type": "distance_covered", 
            "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), 
@@ -77,8 +76,8 @@ def report_running_pace_reading(body):
     logger.info(f"Received event {event_name} request with a trace id of {trace_id}")
 
     #client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}") 
-    client = connect_kafka()
-    topic = client.topics[str.encode(app_config["events"]["topic"])]
+    # topic = client.topics[str.encode(app_config["events"]["topic"])]
+
     producer = topic.get_sync_producer()
 
     msg = { "type": "running_pace", 
