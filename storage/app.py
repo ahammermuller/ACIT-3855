@@ -66,7 +66,7 @@ def get_distance_covered_reading(distance_timestamp, end_timestamp):
     
     session = DB_SESSION() 
     start_timestamp_datetime = datetime.datetime.strptime(distance_timestamp, "%Y-%m-%dT%H:%M:%SZ") 
-    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ") # Lab 11
 
     readings = session.query(DistanceCoveredReading).filter(
         and_(DistanceCoveredReading.date_created >= start_timestamp_datetime, DistanceCoveredReading.date_created < end_timestamp_datetime)) 
@@ -76,7 +76,7 @@ def get_distance_covered_reading(distance_timestamp, end_timestamp):
         results_list.append(reading.to_dict()) 
     
     session.close() 
-    logger.info("Query for Distance Covered readings after %s returns %d results" % (end_timestamp, len(results_list))) 
+    logger.info("Query for Distance Covered readings after %s returns %d results" % (distance_timestamp, len(results_list))) 
     
     print(results_list)
 
@@ -111,7 +111,7 @@ def get_running_pace_reading(pace_timestamp, end_timestamp):
     session = DB_SESSION() 
     
     start_timestamp_datetime = datetime.datetime.strptime(pace_timestamp, "%Y-%m-%dT%H:%M:%SZ") 
-    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ") #Lab 11
 
 
     readings = session.query(RunningPaceReading).filter(
@@ -122,7 +122,7 @@ def get_running_pace_reading(pace_timestamp, end_timestamp):
         results_list.append(reading.to_dict()) 
     
     session.close() 
-    logger.info("Query for Running Pace readings after %s returns %d results" % (end_timestamp, len(results_list))) 
+    logger.info("Query for Running Pace readings after %s returns %d results" % (pace_timestamp, len(results_list))) 
     
     return results_list, 200
 
@@ -152,6 +152,9 @@ def process_messages():
             logger.error(f"Connection to Kafka failed after {max_retries}")
             time.sleep(retry_interval)
             current_retry_count += 1
+
+    if not connected:
+        raise Exception(f"Failed to connect to Kafka after {max_retries} retries")
 
     consumer = topic.get_simple_consumer(consumer_group=b'event_group', reset_offset_on_start=False, auto_offset_reset=OffsetType.LATEST) 
 
