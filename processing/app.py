@@ -61,10 +61,10 @@ def populate_stats():
     event_name = "eventstore"
     url = app_config.get(event_name, {}).get("url")
 
-    distance_covered_url = f"{url}/readings/distance?timestamp={old_datetime}&timestamp={current_timestamp}" # Lab 11
+    distance_covered_url = f"{url}/readings/distance?timestamp={old_datetime}&end_timestamp={current_timestamp}" # Lab 11
     distance_covered_response = requests.get(distance_covered_url)
 
-    running_pace_url = f"{url}/readings/pace?timestamp={old_datetime}&timestamp={current_timestamp}" # Lab 11
+    running_pace_url = f"{url}/readings/pace?timestamp={old_datetime}&end_timestamp={current_timestamp}" # Lab 11
     running_pace_response = requests.get(running_pace_url)
 
     logger.debug(f"Distance Covered URL: {distance_covered_url}")
