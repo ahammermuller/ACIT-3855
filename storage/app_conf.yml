@@ -10,3 +10,4 @@ events:
   hostname: 18.219.140.116
   port: 9092 
   topic: events
+  sleep_time: 5

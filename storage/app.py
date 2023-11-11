@@ -20,6 +20,7 @@ with open('app_conf.yml', 'r') as f:
     app_config = yaml.safe_load(f)
 
 db_config = app_config["datastore"]
+events_config = app_config["events"]
 
 # Create the DB_ENGINE using the extracted configuration values
 DB_ENGINE = create_engine(
@@ -128,8 +129,8 @@ def process_messages():
     # (i.e., it doesn't read all the old messages from the history in the message queue). 
     
     #retirve connect to kafka
-    max_retries = 3
-    retry_interval = 5
+    max_retries = 5
+    retry_interval = events_config["sleep_time"]
 
     current_retry_count = 0
     connected = False
