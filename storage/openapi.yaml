@@ -89,7 +89,6 @@ components:
       - device_id
       - distance
       - distance_timestamp
-      - end_timestamp
       type: object
       properties:
         athlete_id:
@@ -106,10 +105,6 @@ components:
           type: string
           format: date-time
           example: 2016-08-29T09:12:33Z
-        end_timestamp:
-          type: string
-          format: date-time
-          example: 2016-08-29T09:12:33Z  
     RunningPaceReading:
       required:
       - athlete_id
@@ -118,7 +113,6 @@ components:
       - location
       - pace
       - pace_timestamp
-      - end_timestamp
       type: object
       properties:
         athlete_id:
@@ -138,10 +132,6 @@ components:
           type: string
           format: date-time
           example: 2016-08-29T09:12:33Z
-        end_timestamp:
-          type: string
-          format: date-time
-          example: 2016-08-29T09:12:33Z  
         average_pace:
           type: number
           example: 2.5

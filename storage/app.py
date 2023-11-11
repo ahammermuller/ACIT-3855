@@ -59,17 +59,13 @@ DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
 #     return NoContent, 201
 
-def get_distance_covered_reading(timestamp, end_timestamp): 
-
-    """ Gets new distance covered readings after the timestamp """
-    logger.info(f"GET request for distance covered readings between {timestamp} and {end_timestamp}")
+def get_distance_covered_reading(timestamp): 
+    """ Gets new distance covered readings after the timestamp """ 
+    logger.info(f"GET request for distance covered readings with timestamp: {timestamp}")
     
     session = DB_SESSION() 
-    start_timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ") 
-    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ") # Lab 11
-
-    readings = session.query(DistanceCoveredReading).filter(
-        and_(DistanceCoveredReading.date_created >= start_timestamp_datetime, DistanceCoveredReading.date_created < end_timestamp_datetime)) 
+    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    readings = session.query(DistanceCoveredReading).filter(DistanceCoveredReading.date_created >= timestamp_datetime) 
     
     results_list = [] 
     for reading in readings: 
@@ -104,18 +100,13 @@ def get_distance_covered_reading(timestamp, end_timestamp):
 
 #     return NoContent, 201
 
-def get_running_pace_reading(timestamp, end_timestamp): 
+def get_running_pace_reading(timestamp): 
     """ Gets new running pace readings after the timestamp """ 
-    logger.info(f"GET request for running pace readings  between {timestamp} and {end_timestamp}")
-
+    logger.info(f"GET request for running pace readings with timestamp: {timestamp}")
     session = DB_SESSION() 
-    
-    start_timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ") 
-    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ") #Lab 11
+    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
-
-    readings = session.query(RunningPaceReading).filter(
-        and_(RunningPaceReading.date_created >= start_timestamp_datetime, RunningPaceReading.date_created < end_timestamp_datetime)) 
+    readings = session.query(RunningPaceReading).filter(RunningPaceReading.date_created >= timestamp_datetime) 
     
     results_list = [] 
     for reading in readings: 
