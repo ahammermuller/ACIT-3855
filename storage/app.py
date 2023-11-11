@@ -65,8 +65,8 @@ def get_distance_covered_reading(timestamp, end_timestamp):
     logger.info(f"GET request for distance covered readings with timestamp: {timestamp}")
     
     session = DB_SESSION() 
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
-    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
     print("Timestamp", timestamp_datetime)
     print("end_timestamp", end_timestamp_datetime)
 
@@ -110,11 +110,11 @@ def get_running_pace_reading(timestamp, end_timestamp):
     """ Gets new running pace readings after the timestamp """ 
     logger.info(f"GET request for running pace readings with timestamp: {timestamp}")
     session = DB_SESSION() 
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
-    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
+    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
-    print(timestamp_datetime)
-    print(end_timestamp_datetime)
+    print("Timestamp", timestamp_datetime)
+    print("end_timestamp", end_timestamp_datetime)
 
     readings = session.query(RunningPaceReading).filter(
         and_(RunningPaceReading.date_created >= timestamp_datetime, RunningPaceReading.date_created < end_timestamp_datetime))
