@@ -30,6 +30,13 @@ paths:
             type: string 
             format: date-time 
             example: 2016-08-29T09:12:33Z
+        - name: end_timestamp  # Lab 11
+          in: query
+          description: End timestamp for readings
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-30T09:12:33Z
       responses: 
         '200': 
           description: Successfully returned a list of distance covered events 
@@ -63,6 +70,13 @@ paths:
             type: string 
             format: date-time 
             example: 2016-08-29T09:12:33Z
+        - name: end_timestamp  # Lab 11
+          in: query
+          description: End timestamp for readings
+          schema:
+            type: string
+            format: date-time
+            example: 2016-08-30T09:12:33Z
       responses: 
         '200': 
           description: Successfully returned a list of running pace events 
