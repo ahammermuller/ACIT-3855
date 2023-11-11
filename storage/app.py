@@ -59,13 +59,13 @@ DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
 #     return NoContent, 201
 
-def get_distance_covered_reading(distance_timestamp, end_timestamp): 
+def get_distance_covered_reading(timestamp, end_timestamp): 
 
     """ Gets new distance covered readings after the timestamp """
-    logger.info(f"GET request for distance covered readings between {distance_timestamp} and {end_timestamp}")
+    logger.info(f"GET request for distance covered readings between {timestamp} and {end_timestamp}")
     
     session = DB_SESSION() 
-    start_timestamp_datetime = datetime.datetime.strptime(distance_timestamp, "%Y-%m-%dT%H:%M:%SZ") 
+    start_timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ") 
     end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ") # Lab 11
 
     readings = session.query(DistanceCoveredReading).filter(
@@ -76,7 +76,7 @@ def get_distance_covered_reading(distance_timestamp, end_timestamp):
         results_list.append(reading.to_dict()) 
     
     session.close() 
-    logger.info("Query for Distance Covered readings after %s returns %d results" % (distance_timestamp, len(results_list))) 
+    logger.info("Query for Distance Covered readings after %s returns %d results" % (timestamp, len(results_list))) 
     
     print(results_list)
 
@@ -104,13 +104,13 @@ def get_distance_covered_reading(distance_timestamp, end_timestamp):
 
 #     return NoContent, 201
 
-def get_running_pace_reading(pace_timestamp, end_timestamp): 
+def get_running_pace_reading(timestamp, end_timestamp): 
     """ Gets new running pace readings after the timestamp """ 
-    logger.info(f"GET request for running pace readings  between {pace_timestamp} and {end_timestamp}")
+    logger.info(f"GET request for running pace readings  between {timestamp} and {end_timestamp}")
 
     session = DB_SESSION() 
     
-    start_timestamp_datetime = datetime.datetime.strptime(pace_timestamp, "%Y-%m-%dT%H:%M:%SZ") 
+    start_timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ") 
     end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ") #Lab 11
 
 
@@ -122,7 +122,7 @@ def get_running_pace_reading(pace_timestamp, end_timestamp):
         results_list.append(reading.to_dict()) 
     
     session.close() 
-    logger.info("Query for Running Pace readings after %s returns %d results" % (pace_timestamp, len(results_list))) 
+    logger.info("Query for Running Pace readings after %s returns %d results" % (timestamp, len(results_list))) 
     
     return results_list, 200
 
