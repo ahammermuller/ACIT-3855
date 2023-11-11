@@ -76,6 +76,7 @@ def populate_stats():
             logger.info(f"Received {num_new_distance_events} new Distance Covered events")
     else:
         logger.error(f"Error fetching Distance Covered. Status code: {distance_covered_response.status_code}")
+        logger.error(f"Response content: {distance_covered_response.text}")
 
     # Check if there are new Running Pace events and update the count
     if running_pace_response.status_code == 200:
