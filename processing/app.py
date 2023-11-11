@@ -57,6 +57,9 @@ def populate_stats():
     old_datetime = default_stats['last_timestamp']
     current_timestamp = str(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"))
 
+    print(f"Old Timestamp: {old_datetime}")
+    print(f"Current Timestamp: {current_timestamp}")
+
     # Query the two GET endpoints from Data Store Service
     event_name = "eventstore"
     url = app_config.get(event_name, {}).get("url")
@@ -66,6 +69,9 @@ def populate_stats():
 
     running_pace_url = f"{url}/readings/pace?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     running_pace_response = requests.get(running_pace_url)
+
+    print(f"Distance Covered Response: {distance_covered_response.status_code}")
+    print(f"Running Pace Response: {running_pace_response.status_code}")
 
     # Log an info message with the number of events received and log an error message in case did not get a 200 response code.   
     if distance_covered_response.status_code == 200:
