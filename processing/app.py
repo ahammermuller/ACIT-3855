@@ -169,11 +169,6 @@ def get_stats():
         logger.error("Statistics file does not exist")
         return "Statistics do not exist", 404
 
-app = connexion.FlaskApp(__name__, specification_dir='')
-app.add_api("openapi.yaml", 
-            strict_validation=True, 
-            validate_responses=True)
-
 
 def init_scheduler(): 
     sched = BackgroundScheduler(daemon=True) 
