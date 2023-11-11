@@ -129,7 +129,7 @@ def process_messages():
     # (i.e., it doesn't read all the old messages from the history in the message queue). 
     
     #retirve connect to kafka
-    max_retries = 5
+    max_retries = 10
     retry_interval = events_config["sleep_time"]
 
     current_retry_count = 0
@@ -140,6 +140,7 @@ def process_messages():
             client = KafkaClient(hosts=hostname)
             topic = client.topics[str.encode(app_config["events"]["topic"])]
             connected = True
+            logger.info("Successfully connected to Kafka.")
         except Exception as e:
             logger.error(f"Connection to Kafka failed after {max_retries}")
             time.sleep(retry_interval)
