@@ -38,6 +38,30 @@ logger.info(f"Connecting to DB. Hostname: {db_config['hostname']}, Port: {db_con
 
 DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
+    # Connect to kafka with retries
+
+
+hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"])
+events_config = app_config["events"]
+max_retries = 10
+retry_interval = events_config["sleep_time"]
+
+current_retry_count = 0
+connected = False
+
+while current_retry_count < max_retries and not connected:
+    try:
+        client = KafkaClient(hosts=hostname)
+        topic = client.topics[str.encode(app_config["events"]["topic"])]        
+        connected = True
+        logger.info("Successfully connected to Kafka.")        
+    except Exception as e:
+        logger.error(f"Connection to Kafka failed after {current_retry_count}")
+        time.sleep(retry_interval)
+        current_retry_count += 1
+
+if not connected:
+    raise Exception(f"Failed to connect to Kafka after {max_retries} retries")
 
 # def report_distance_covered_reading(body):
 #     """ Receives a distance covered reading """
@@ -62,7 +86,7 @@ DB_SESSION = sessionmaker(bind=DB_ENGINE)
 
 def get_distance_covered_reading(timestamp, end_timestamp): 
     """ Gets new distance covered readings after the timestamp """ 
-    logger.info(f"GET request for distance covered readings with timestamp: {timestamp}")
+    logger.info(f"GET request for distance covered readings with timestamp between: {timestamp} and {end_timestamp}")
     
     session = DB_SESSION() 
     timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
@@ -131,33 +155,12 @@ def get_running_pace_reading(timestamp, end_timestamp):
 
 def process_messages():
     """ Process event messages """
-    hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"]) 
-    client = KafkaClient(hosts=hostname) 
-    topic = client.topics[str.encode(app_config["events"]["topic"])] 
+    #hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"]) 
+    #client = KafkaClient(hosts=hostname) 
+    #topic = client.topics[str.encode(app_config["events"]["topic"])] 
     
     # Create a consume on a consumer group, that only reads new messages (uncommitted messages) when the service re-starts 
     # (i.e., it doesn't read all the old messages from the history in the message queue). 
-    
-    #retirve connect to kafka
-    max_retries = 10
-    retry_interval = events_config["sleep_time"]
-
-    current_retry_count = 0
-    connected = False
-
-    while current_retry_count < max_retries and not connected:
-        try:
-            client = KafkaClient(hosts=hostname)
-            topic = client.topics[str.encode(app_config["events"]["topic"])]
-            connected = True
-            logger.info("Successfully connected to Kafka.")
-        except Exception as e:
-            logger.error(f"Connection to Kafka failed after {current_retry_count}")
-            time.sleep(retry_interval)
-            current_retry_count += 1
-
-    if not connected:
-        raise Exception(f"Failed to connect to Kafka after {max_retries} retries")
 
     consumer = topic.get_simple_consumer(consumer_group=b'event_group', reset_offset_on_start=False, auto_offset_reset=OffsetType.LATEST) 
 
