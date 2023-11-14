@@ -72,6 +72,8 @@ def populate_stats():
 
     print(f"Distance Covered Response: {distance_covered_response.status_code}")
     print(f"Running Pace Response: {running_pace_response.status_code}")
+    print(f"Distance Covered Events: {distance_covered_events}")
+    print(f"Running Pace Events: {running_pace_events}")
 
     # Log an info message with the number of events received and log an error message in case did not get a 200 response code.   
     if distance_covered_response.status_code == 200:
