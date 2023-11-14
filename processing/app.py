@@ -130,12 +130,12 @@ def populate_stats():
     num_pace_events_received += len(running_pace_events)
 
     # Update default stats
-    default_stats['total_distance_covered'] = round(total_distance_covered, 2)
-    default_stats['average_pace'] = average_pace
-    default_stats['max_elevation'] = max_elevation
-    default_stats['num_distance_events_received'] = num_distance_events_received
-    default_stats['num_pace_events_received'] = num_pace_events_received
-    default_stats['last_timestamp'] = str(current_timestamp)
+    stats['total_distance_covered'] = round(total_distance_covered, 2)
+    stats['average_pace'] = average_pace
+    stats['max_elevation'] = max_elevation
+    stats['num_distance_events_received'] = num_distance_events_received
+    stats['num_pace_events_received'] = num_pace_events_received
+    stats['last_timestamp'] = current_timestamp
 
 
     # Write the updated statistics to the JSON file
