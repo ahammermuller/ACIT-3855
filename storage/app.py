@@ -134,7 +134,7 @@ def get_running_pace_reading(timestamp, end_timestamp):
 
 def process_messages():
     """ Process event messages """
-    #hostname = "%s:%d" % (app_config["events"]["hostname"], app_config["events"]["port"]) 
+
     #client = KafkaClient(hosts=hostname) 
     #topic = client.topics[str.encode(app_config["events"]["topic"])] 
     
@@ -166,52 +166,47 @@ def process_messages():
 
         # This is blocking - it will wait for a new message 
     
-    while True:
-        try:    
-            for msg in consumer: 
-                msg_str = msg.value.decode('utf-8') 
-                msg = json.loads(msg_str) 
-                logger.info("Message: %s" % msg) 
+    for msg in consumer: 
+        msg_str = msg.value.decode('utf-8') 
+        msg = json.loads(msg_str) 
+        logger.info("Message: %s" % msg) 
                     
-                payload = msg["payload"] 
-                    
-                if msg["type"] == "distance_covered":
-                    # Store the event2 (i.e., the payload) to the DB 
-                    dc = DistanceCoveredReading(payload['trace_id'],
-                                                payload['athlete_id'],
-                                                payload['device_id'],
-                                                payload['distance'],
-                                                payload['distance_timestamp'])
+        payload = msg["payload"] 
+                
+        if msg["type"] == "distance_covered":
+            # Store the event2 (i.e., the payload) to the DB 
+            dc = DistanceCoveredReading(payload['trace_id'],
+                                        payload['athlete_id'],
+                                        payload['device_id'],
+                                        payload['distance'],
+                                        payload['distance_timestamp'])
                         
-                    session = DB_SESSION()
-                    session.add(dc)
-                    session.commit()
-                    session.close()
-                    logger.info("Stored event1 to the database: %s" % payload)
+            session = DB_SESSION()
+            session.add(dc)
+            session.commit()
+            session.close()
+            logger.info("Stored event1 to the database: %s" % payload)
 
-                elif msg["type"] == "running_pace":
-                    # Store the event2 (i.e., the payload) to the DB 
-                    rp = RunningPaceReading(payload['trace_id'],
-                                            payload['athlete_id'],
-                                            payload['average_pace'],
-                                            payload['elevation'],
-                                            payload['location'],
-                                            payload['pace'],
-                                            payload['pace_timestamp'])
+        elif msg["type"] == "running_pace":
+            # Store the event2 (i.e., the payload) to the DB 
+            rp = RunningPaceReading(payload['trace_id'],
+                                    payload['athlete_id'],
+                                    payload['average_pace'],
+                                    payload['elevation'],
+                                    payload['location'],
+                                    payload['pace'],
+                                    payload['pace_timestamp'])
                         
-                    session = DB_SESSION()
-                    session.add(rp)
-                    session.commit()
-                    session.close()
-                    logger.info("Stored event2 to the database: %s" % payload)
+            session = DB_SESSION()
+            session.add(rp)
+            session.commit()
+            session.close()
+            logger.info("Stored event2 to the database: %s" % payload)
 
                         
-                # Commit the new message as being read 
-                consumer.commit_offsets()
-                logger.debug("End of consumer loop iteration")
-        except Exception as e:
-            logger.error(f"Error in Kafka consumer loop: {str(e)}")
-            time.sleep(retry_interval)
+        # Commit the new message as being read 
+        consumer.commit_offsets()
+        logger.debug("End of consumer loop iteration")
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
