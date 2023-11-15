@@ -68,40 +68,38 @@ def populate_stats():
     running_pace_response = requests.get(running_pace_url)
   
 
+    # Initialize variables
+    total_distance_covered = stats['total_distance_covered']
+    average_pace = stats['average_pace']
+    max_elevation = stats['max_elevation']
+    num_distance_events_received = stats['num_distance_events_received']
+    num_pace_events_received = stats['num_pace_events_received']
+    total_pace = 0
+
     # Log an info message with the number of events received and log an error message in case did not get a 200 response code.   
     if distance_covered_response.status_code == 200:
         distance_covered_events = distance_covered_response.json()
-        num_new_distance_events = len(distance_covered_events) - stats['num_distance_events_received']
-        
+        num_new_distance_events = len(distance_covered_events) - num_distance_events_received
+
         if num_new_distance_events > 0:
-            stats['num_distance_events_received'] += num_new_distance_events
+            num_distance_events_received += num_new_distance_events
             logger.info(f"Received {num_new_distance_events} new Distance Covered events")
     else:
         logger.error(f"Error fetching Distance Covered. Status code: {distance_covered_response.status_code}")
         logger.error(f"Response content: {distance_covered_response.text}")
 
-
     # Check if there are new Running Pace events and update the count
     if running_pace_response.status_code == 200:
         running_pace_events = running_pace_response.json()
-        num_new_pace_events = len(running_pace_events) - stats['num_pace_events_received']
-
+        num_new_pace_events = len(running_pace_events) - num_pace_events_received
 
         if num_new_pace_events > 0:
-            stats['num_pace_events_received'] += num_new_pace_events
+            num_pace_events_received += num_new_pace_events
             logger.info(f"Received {num_new_pace_events} new Running Pace events")
     else:
         logger.error(f"Error fetching Running Pace. Status code: {running_pace_response.status_code}")
 
     # Calculate statistics based on both distance_covered_events and running_pace_events
-    # Initialize variables
-    total_distance_covered = 0
-    average_pace = 0
-    max_elevation = 0
-    num_distance_events_received = 0
-    num_pace_events_received = 0
-    total_pace = 0
-
     # Calculate total distance covered
     for event in distance_covered_events:
         total_distance_covered += event['distance']
@@ -135,7 +133,6 @@ def populate_stats():
                 f"Num Distance Covered events: {num_distance_events_received}, "
                 f"Num Running Pace events: {num_pace_events_received} ")
 
-    
     # Log info period processing ended
     logger.info(f"Period processing has ended")
 
@@ -150,9 +147,6 @@ def get_stats():
         # If the file exists, read its contents into the 'stats' dictionary
         with open(app_config['datastore']['filename'], 'r') as file:
             stats = json.load(file)
-        
-        # Log a DEBUG message with the contents of the Python Dictionary
-        logger.debug(f"Statistics data: {stats}")
 
         logger.info(f"Request for statistics has completed")
         
