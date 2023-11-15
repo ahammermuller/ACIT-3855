@@ -82,7 +82,7 @@ def populate_stats():
         num_new_distance_events = len(distance_covered_events) - num_distance_events_received
 
         if num_new_distance_events > 0:
-            num_distance_events_received += num_new_distance_events
+            num_distance_events_received = len(distance_covered_events)
             logger.info(f"Received {num_new_distance_events} new Distance Covered events")
     else:
         logger.error(f"Error fetching Distance Covered. Status code: {distance_covered_response.status_code}")
@@ -94,7 +94,7 @@ def populate_stats():
         num_new_pace_events = len(running_pace_events) - num_pace_events_received
 
         if num_new_pace_events > 0:
-            num_pace_events_received += num_new_pace_events
+            num_pace_events_received = len(running_pace_events)
             logger.info(f"Received {num_new_pace_events} new Running Pace events")
     else:
         logger.error(f"Error fetching Running Pace. Status code: {running_pace_response.status_code}")
@@ -103,7 +103,7 @@ def populate_stats():
     # Calculate total distance covered
     for event in distance_covered_events:
         total_distance_covered += event['distance']
-    num_distance_events_received += len(distance_covered_events)
+
 
     # Calculate average pace
     for event in running_pace_events:
@@ -112,7 +112,7 @@ def populate_stats():
     if running_pace_events:
         max_elevation = max(max_elevation, event['elevation'])
         average_pace = round(total_pace / len(running_pace_events), 2)
-    num_pace_events_received += len(running_pace_events)
+
 
     # Update stats
     stats['total_distance_covered'] = round(total_distance_covered, 2)
