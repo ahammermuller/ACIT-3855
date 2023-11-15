@@ -69,11 +69,7 @@ def populate_stats():
 
     running_pace_url = f"{url}/readings/pace?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     running_pace_response = requests.get(running_pace_url)
-
-    print(f"Distance Covered Response: {distance_covered_response.status_code}")
-    print(f"Running Pace Response: {running_pace_response.status_code}")
-    print(f"Distance Covered Response: {distance_covered_response.text}")
-    print(f"Running Pace Response: {running_pace_response.text}")    
+  
 
     # Initialize variables
     total_distance_covered = 0
