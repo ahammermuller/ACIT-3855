@@ -71,26 +71,11 @@ def populate_stats():
     running_pace_response = requests.get(running_pace_url)
   
 
-    # Initialize variables
-    total_distance_covered = 0
-    average_pace = 0
-    max_elevation = 0
-    num_distance_events_received = 0
-    num_pace_events_received = 0
-    total_pace = 0
-
-
     # Log an info message with the number of events received and log an error message in case did not get a 200 response code.   
     if distance_covered_response.status_code == 200:
         distance_covered_events = distance_covered_response.json()
         num_new_distance_events = len(distance_covered_events) - stats['num_distance_events_received']
         
-        # Calculate total distance covered        
-        for event in distance_covered_events:
-            total_distance_covered += event['distance']
-        num_distance_events_received += len(distance_covered_events)
-        stats['total_distance_covered'] = round(total_distance_covered, 2)
-        stats['num_distance_events_received'] = num_distance_events_received
         if num_new_distance_events > 0:
             stats['num_distance_events_received'] += num_new_distance_events
             logger.info(f"Received {num_new_distance_events} new Distance Covered events")
@@ -104,17 +89,6 @@ def populate_stats():
         running_pace_events = running_pace_response.json()
         num_new_pace_events = len(running_pace_events) - stats['num_pace_events_received']
 
-        # Calculate average pace
-        for event in running_pace_events:
-            total_pace += event['pace']
-
-        if running_pace_events:
-            max_elevation = max(max_elevation, event['elevation'])
-            average_pace = round(total_pace / len(running_pace_events),2)
-        num_pace_events_received += len(running_pace_events)
-        stats['average_pace'] = average_pace
-        stats['max_elevation'] = max_elevation
-        stats['num_pace_events_received'] = num_pace_events_received
 
         if num_new_pace_events > 0:
             stats['num_pace_events_received'] += num_new_pace_events
@@ -122,15 +96,40 @@ def populate_stats():
     else:
         logger.error(f"Error fetching Running Pace. Status code: {running_pace_response.status_code}")
 
+    # Calculate statistics based on both distance_covered_events and running_pace_events
+    # Initialize variables
+    total_distance_covered = 0
+    average_pace = 0
+    max_elevation = 0
+    num_distance_events_received = 0
+    num_pace_events_received = 0
+    total_pace = 0
 
-    # Update default stats
+    # Calculate total distance covered
+    for event in distance_covered_events:
+        total_distance_covered += event['distance']
+    num_distance_events_received += len(distance_covered_events)
+
+    # Calculate average pace
+    for event in running_pace_events:
+        total_pace += event['pace']
+
+    if running_pace_events:
+        max_elevation = max(max_elevation, event['elevation'])
+        average_pace = round(total_pace / len(running_pace_events), 2)
+    num_pace_events_received += len(running_pace_events)
+
+    # Update stats
+    stats['total_distance_covered'] = round(total_distance_covered, 2)
+    stats['num_distance_events_received'] = num_distance_events_received
+    stats['average_pace'] = average_pace
+    stats['max_elevation'] = max_elevation
+    stats['num_pace_events_received'] = num_pace_events_received
     stats['last_timestamp'] = str(current_timestamp)
-
 
     # Write the updated statistics to the JSON file
     with open(app_config['datastore']['filename'], 'w') as file:
         json.dump(stats, file)
-
 
     # Log a DEBUG message with your updated statistics values
     logger.debug(f"Total Distance Covered: {total_distance_covered}, "
