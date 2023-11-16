@@ -62,8 +62,7 @@ def populate_stats():
     print(f"Current Timestamp: {current_timestamp}")
 
     # Query the two GET endpoints from Data Store Service
-    event_name = "eventstore"
-    url = app_config.get(event_name, {}).get("url")
+    url = app_config['eventstore']['url']
 
     distance_covered_url = f"{url}/readings/distance?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     distance_covered_response = requests.get(distance_covered_url)
