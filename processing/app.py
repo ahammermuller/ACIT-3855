@@ -67,12 +67,12 @@ def populate_stats():
     distance_covered_url = f"{url}/readings/distance?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     distance_covered_response = requests.get(distance_covered_url)
 
-    print(distance_covered_response.text)
+    print("query endpoints:", distance_covered_response.text)
 
     running_pace_url = f"{url}/readings/pace?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     running_pace_response = requests.get(running_pace_url)
 
-    print(running_pace_response.text)
+    print("query endpoints:", running_pace_response.text)
   
 
     # Initialize variables
@@ -87,6 +87,7 @@ def populate_stats():
     if distance_covered_response.status_code == 200:
         distance_covered_events = distance_covered_response.json()
         num_new_distance_events = len(distance_covered_events) - num_distance_events_received
+        print("response 200", distance_covered_response.text)
         
         if num_new_distance_events > 0:
             logger.info(f"Received {num_new_distance_events} new Distance Covered events")
@@ -98,6 +99,7 @@ def populate_stats():
     if running_pace_response.status_code == 200:
         running_pace_events = running_pace_response.json()
         num_new_pace_events = len(running_pace_events) - num_pace_events_received
+        print("response 200", running_pace_response.text)
 
         if num_new_pace_events > 0:
             logger.info(f"Received {num_new_pace_events} new Running Pace events")
