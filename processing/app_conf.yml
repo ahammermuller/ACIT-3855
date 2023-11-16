@@ -4,4 +4,4 @@ datastore:
 scheduler: 
   period_sec: 5 
 eventstore: 
-  url: http://localhost:8090
+  url: http://18.219.140.116:8090
