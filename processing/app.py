@@ -129,7 +129,7 @@ def populate_stats():
     stats['num_pace_events_received'] = num_pace_events_received
     stats['last_timestamp'] = str(current_timestamp)
 
-    print("stats before statistic:", stats)
+    logger.info("stats before write file:", stats)
 
     # Write the updated statistics to the JSON file
     with open(app_config['datastore']['filename'], 'w') as file:
