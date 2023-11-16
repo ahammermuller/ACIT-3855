@@ -68,13 +68,13 @@ def populate_stats():
     print("query endpoint 1:", distance_covered_url)
     distance_covered_response = requests.get(distance_covered_url)
     distance_covered_events = distance_covered_response.json()
-    logger.info(f"Response content: {distance_covered_response.text}")
+    logger.debug(f"Response content: {distance_covered_response.text}")
 
     running_pace_url = url + "/readings/pace?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
     print("query endpoint 2:", running_pace_url)
     running_pace_response = requests.get(running_pace_url)
     running_pace_events = running_pace_response.json()
-    logger.info(f"Response content: {running_pace_response.text}")
+    logger.debug(f"Response content: {running_pace_response.text}")
   
 
     # Initialize variables
