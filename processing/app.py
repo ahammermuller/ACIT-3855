@@ -12,8 +12,6 @@ import datetime
 from flask_cors import CORS, cross_origin
 
 
-scheduler = BackgroundScheduler(timezone=pytz.utc)
-scheduler.start()
 
 with open('app_conf.yml', 'r') as f: 
     app_config = yaml.safe_load(f.read())
@@ -54,8 +52,8 @@ def populate_stats():
 
 
     # Get current datetime
-    old_datetime = "2016-08-29T09:12:33Z"
-    current_timestamp = str(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"))
+    old_datetime = stats['last_timestamp']
+    current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
     print(f"Old Timestamp: {old_datetime}")
     print(f"Current Timestamp: {current_timestamp}")
@@ -67,12 +65,12 @@ def populate_stats():
     distance_covered_url = f"{url}/readings/distance?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     distance_covered_response = requests.get(distance_covered_url)
 
-    print("query endpoints:", distance_covered_response.text)
+    print("query endpoint 1:", distance_covered_url)
 
     running_pace_url = f"{url}/readings/pace?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     running_pace_response = requests.get(running_pace_url)
 
-    print("query endpoints:", running_pace_response.text)
+    print("query endpoint 2:", running_pace_url)
   
 
     # Initialize variables
