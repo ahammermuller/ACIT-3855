@@ -63,13 +63,14 @@ def populate_stats():
 
     # Query the two GET endpoints from Data Store Service
     url = app_config['eventstore']['url']
+    print(url)
 
-    distance_covered_url = f"{url}/readings/distance?timestamp={old_datetime}&end_timestamp={current_timestamp}"
+    distance_covered_url = url + "/readings/distance?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
     distance_covered_response = requests.get(distance_covered_url)
 
     print("query endpoint 1:", distance_covered_url)
 
-    running_pace_url = f"{url}/readings/pace?timestamp={old_datetime}&end_timestamp={current_timestamp}"
+    running_pace_url = url + "/readings/pace?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
     running_pace_response = requests.get(running_pace_url)
 
     print("query endpoint 2:", running_pace_url)
