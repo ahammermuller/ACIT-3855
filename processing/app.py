@@ -54,7 +54,7 @@ def populate_stats():
 
 
     # Get current datetime
-    old_datetime = str(stats['last_timestamp'])
+    old_datetime = "2016-08-29T09:12:33Z"
     current_timestamp = str(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"))
 
     print(f"Old Timestamp: {old_datetime}")
