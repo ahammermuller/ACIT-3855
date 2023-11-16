@@ -48,6 +48,8 @@ def populate_stats():
     else:
         # If the file doesn't exist, use default statistics
         stats = default_stats
+        with open(app_config['datastore']['filename'], 'w') as file:
+            json.dump(stats, file)
 
 
     # Get current datetime
@@ -103,12 +105,15 @@ def populate_stats():
         total_distance_covered += event['distance']
         num_distance_events_received += 1
 
-    # Calculate average pace
+        # Calculate average pace
     for event in running_pace_events:
         total_pace += event['pace']
         num_pace_events_received += 1
-        max_elevation = max(max_elevation, event['elevation'])
+
+    # Calculate average pace outside the loop
+    if running_pace_events:
         average_pace = round(total_pace / len(running_pace_events), 2)
+        max_elevation = max(max_elevation, event['elevation'])
 
 
     # Update stats
