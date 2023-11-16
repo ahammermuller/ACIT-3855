@@ -76,6 +76,8 @@ def get_distance_covered_reading(timestamp, end_timestamp):
     readings = session.query(DistanceCoveredReading).filter(
         and_(DistanceCoveredReading.date_created >= timestamp_datetime, DistanceCoveredReading.date_created < end_timestamp_datetime))
     
+    logger.debug(f"Generated SQL Query: {readings}")
+
     results_list = [] 
     for reading in readings: 
         results_list.append(reading.to_dict()) 
@@ -122,6 +124,8 @@ def get_running_pace_reading(timestamp, end_timestamp):
     readings = session.query(RunningPaceReading).filter(
         and_(RunningPaceReading.date_created >= timestamp_datetime, RunningPaceReading.date_created < end_timestamp_datetime))
     
+    logger.debug(f"Generated SQL Query: {readings}")
+
     results_list = [] 
     for reading in readings: 
         results_list.append(reading.to_dict()) 
