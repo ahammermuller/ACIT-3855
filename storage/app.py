@@ -206,7 +206,6 @@ def process_messages():
                         
         # Commit the new message as being read 
         consumer.commit_offsets()
-        logger.debug("End of consumer loop iteration")
 
 
 app = connexion.FlaskApp(__name__, specification_dir='')
