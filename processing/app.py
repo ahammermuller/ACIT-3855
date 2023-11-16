@@ -66,14 +66,14 @@ def populate_stats():
     print(url)
 
     distance_covered_url = url + "/readings/distance?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
+    print("query endpoint 1:", distance_covered_url)
     distance_covered_response = requests.get(distance_covered_url)
 
-    print("query endpoint 1:", distance_covered_url)
 
     running_pace_url = url + "/readings/pace?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
+    print("query endpoint 2:", running_pace_url)
     running_pace_response = requests.get(running_pace_url)
 
-    print("query endpoint 2:", running_pace_url)
   
 
     # Initialize variables
