@@ -63,18 +63,18 @@ def populate_stats():
 
     # Query the two GET endpoints from Data Store Service
     url = app_config['eventstore']['url']
-    print(url)
 
-    distance_covered_url = url + "/readings/distance?timestamp=" + str(old_datetime) + "&end_timestamp=" + str(current_timestamp)
+    distance_covered_url = url + "/readings/distance?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
     print("query endpoint 1:", distance_covered_url)
     distance_covered_response = requests.get(distance_covered_url)
     distance_covered_events = distance_covered_response.json()
-    print("response", distance_covered_response.text)
+    logger.info(f"Response content: {distance_covered_response.text}")
 
-    running_pace_url = url + "/readings/pace?timestamp=" + str(old_datetime) + "&end_timestamp=" + str(current_timestamp)
+    running_pace_url = url + "/readings/pace?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
     print("query endpoint 2:", running_pace_url)
     running_pace_response = requests.get(running_pace_url)
-    print("response", distance_covered_response.text)
+    running_pace_events = running_pace_response.json()
+    logger.info(f"Response content: {running_pace_response.text}")
   
 
     # Initialize variables
@@ -87,21 +87,16 @@ def populate_stats():
 
     # Log an info message with the number of events received and log an error message in case did not get a 200 response code.   
     if distance_covered_response.status_code == 200:
-        distance_covered_events = distance_covered_response.json()
         num_new_distance_events = len(distance_covered_events) - num_distance_events_received
-        print("response 200", distance_covered_response.text)
         
         if num_new_distance_events > 0:
             logger.info(f"Received {num_new_distance_events} new Distance Covered events")
     else:
         logger.error(f"Error fetching Distance Covered. Status code: {distance_covered_response.status_code}")
-        logger.error(f"Response content: {distance_covered_response.text}")
 
     # Check if there are new Running Pace events and update the count
     if running_pace_response.status_code == 200:
-        running_pace_events = running_pace_response.json()
         num_new_pace_events = len(running_pace_events) - num_pace_events_received
-        print("response 200", running_pace_response.text)
 
         if num_new_pace_events > 0:
             logger.info(f"Received {num_new_pace_events} new Running Pace events")
