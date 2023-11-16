@@ -45,11 +45,13 @@ def populate_stats():
         # If the file exists, read its contents into the 'stats' dictionary
         with open(app_config['datastore']['filename'], 'r') as file:
             stats = json.load(file)
+            print("file exist open:", stats)
     else:
         # If the file doesn't exist, use default statistics
         stats = default_stats
         with open(app_config['datastore']['filename'], 'w') as file:
             json.dump(stats, file)
+
 
     # Get current datetime
     old_datetime = stats['last_timestamp']
@@ -126,6 +128,8 @@ def populate_stats():
     stats['max_elevation'] = max_elevation
     stats['num_pace_events_received'] = num_pace_events_received
     stats['last_timestamp'] = str(current_timestamp)
+
+    print("stats before statistic:", stats)
 
     # Write the updated statistics to the JSON file
     with open(app_config['datastore']['filename'], 'w') as file:
