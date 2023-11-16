@@ -72,12 +72,8 @@ def get_distance_covered_reading(timestamp, end_timestamp):
     # timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
     # end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
     
-    print("Timestamp", timestamp)
-    print("end_timestamp", end_timestamp)
-
-    readings = session.query(DistanceCoveredReading).filter(and_(DistanceCoveredReading.date_created >= timestamp, DistanceCoveredReading.date_created < end_timestamp))
-    
-    print ("readings:", readings)
+    readings = session.query(DistanceCoveredReading).filter(
+        and_(DistanceCoveredReading.date_created >= timestamp, DistanceCoveredReading.date_created < end_timestamp))
 
     results_list = [] 
     for reading in readings: 
@@ -85,8 +81,7 @@ def get_distance_covered_reading(timestamp, end_timestamp):
     
     session.close() 
     logger.info("Query for Distance Covered readings after %s returns %d results" % (timestamp, len(results_list))) 
-    
-    print(results_list)
+
 
     return results_list, 200
 
@@ -116,15 +111,12 @@ def get_running_pace_reading(timestamp, end_timestamp):
     """ Gets new running pace readings after the timestamp """ 
     logger.info(f"GET request for running pace readings with timestamp: {timestamp}")
     session = DB_SESSION() 
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
-
-    print("Timestamp", timestamp_datetime)
-    print("end_timestamp", end_timestamp_datetime)
+    
+    # timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    # end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
     readings = session.query(RunningPaceReading).filter(
-        and_(RunningPaceReading.date_created >= timestamp_datetime, RunningPaceReading.date_created < end_timestamp_datetime))
-
+        and_(RunningPaceReading.date_created >= timestamp, RunningPaceReading.date_created < end_timestamp))
 
     results_list = [] 
     for reading in readings: 
