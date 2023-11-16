@@ -68,14 +68,16 @@ def get_distance_covered_reading(timestamp, end_timestamp):
     logger.info(f"GET request for distance covered readings with timestamp between: {timestamp} and {end_timestamp}")
     
     session = DB_SESSION() 
-    timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    print("Timestamp", timestamp_datetime)
-    print("end_timestamp", end_timestamp_datetime)
-
-    readings = session.query(DistanceCoveredReading).filter(
-        and_(DistanceCoveredReading.date_created >= timestamp_datetime, DistanceCoveredReading.date_created < end_timestamp_datetime))
     
+    # timestamp_datetime = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    # end_timestamp_datetime = datetime.datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    
+    print("Timestamp", timestamp)
+    print("end_timestamp", end_timestamp)
+
+    readings = session.query(DistanceCoveredReading).filter(and_(DistanceCoveredReading.date_created >= timestamp, DistanceCoveredReading.date_created < end_timestamp))
+    
+    print ("readings:", readings)
 
     results_list = [] 
     for reading in readings: 
