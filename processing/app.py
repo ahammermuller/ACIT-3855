@@ -48,8 +48,8 @@ def populate_stats():
     else:
         # If the file doesn't exist, use default statistics
         stats = default_stats
-        with open(app_config['datastore']['filename'], 'w') as file:
-            json.dump(stats, file)
+    with open(app_config['datastore']['filename'], 'w') as file:
+        json.dump(stats, file)
 
 
     # Get current datetime
