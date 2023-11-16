@@ -65,12 +65,12 @@ def populate_stats():
     url = app_config['eventstore']['url']
     print(url)
 
-    distance_covered_url = url + "/readings/distance?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
+    distance_covered_url = url + "/readings/distance?timestamp=" + str(old_datetime) + "&end_timestamp=" + str(current_timestamp)
     print("query endpoint 1:", distance_covered_url)
     distance_covered_response = requests.get(distance_covered_url)
 
 
-    running_pace_url = url + "/readings/pace?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
+    running_pace_url = url + "/readings/pace?timestamp=" + str(old_datetime) + "&end_timestamp=" + str(current_timestamp)
     print("query endpoint 2:", running_pace_url)
     running_pace_response = requests.get(running_pace_url)
 
