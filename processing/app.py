@@ -51,7 +51,6 @@ def populate_stats():
         with open(app_config['datastore']['filename'], 'w') as file:
             json.dump(stats, file)
 
-
     # Get current datetime
     old_datetime = stats['last_timestamp']
     current_timestamp = str(datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"))
@@ -66,8 +65,12 @@ def populate_stats():
     distance_covered_url = f"{url}/readings/distance?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     distance_covered_response = requests.get(distance_covered_url)
 
+    print(distance_covered_response.text)
+
     running_pace_url = f"{url}/readings/pace?timestamp={old_datetime}&end_timestamp={current_timestamp}"
     running_pace_response = requests.get(running_pace_url)
+
+    print(running_pace_response.text)
   
 
     # Initialize variables
