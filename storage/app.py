@@ -73,7 +73,7 @@ def get_distance_covered_reading(timestamp, end_timestamp):
     # end_timestamp_datetime = datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
     
     readings = session.query(DistanceCoveredReading).filter(
-        and_(DistanceCoveredReading.date_created >= timestamp_datetime, DistanceCoveredReading.date_created < end_timestamp_datetime))
+        and_(DistanceCoveredReading.date_created >= timestamp, DistanceCoveredReading.date_created < end_timestamp))
 
     results_list = [] 
     for reading in readings: 
@@ -116,7 +116,7 @@ def get_running_pace_reading(timestamp, end_timestamp):
     # end_timestamp_datetime = datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
     readings = session.query(RunningPaceReading).filter(
-        and_(RunningPaceReading.date_created >= timestamp_datetime, RunningPaceReading.date_created < end_timestamp_datetime))
+        and_(RunningPaceReading.date_created >= timestamp, RunningPaceReading.date_created < end_timestamp))
 
     results_list = [] 
     for reading in readings: 
