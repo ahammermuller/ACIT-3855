@@ -69,8 +69,8 @@ def get_distance_covered_reading(timestamp, end_timestamp):
     
     session = DB_SESSION() 
     
-    timestamp_datetime = datetime.datetime.strftime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    end_timestamp_datetime = datetime.datetime.strftime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    timestamp_datetime = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    end_timestamp_datetime = datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
     
     readings = session.query(DistanceCoveredReading).filter(
         and_(DistanceCoveredReading.date_created >= timestamp_datetime, DistanceCoveredReading.date_created < end_timestamp_datetime))
@@ -112,8 +112,8 @@ def get_running_pace_reading(timestamp, end_timestamp):
     logger.info(f"GET request for running pace readings with timestamp: {timestamp}")
     session = DB_SESSION() 
     
-    timestamp_datetime = datetime.datetime.strftime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
-    end_timestamp_datetime = datetime.datetime.strftime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    timestamp_datetime = datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%SZ")
+    end_timestamp_datetime = datetime.strptime(end_timestamp, "%Y-%m-%dT%H:%M:%SZ")
 
     readings = session.query(RunningPaceReading).filter(
         and_(RunningPaceReading.date_created >= timestamp_datetime, RunningPaceReading.date_created < end_timestamp_datetime))
