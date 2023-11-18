@@ -16,15 +16,26 @@ scheduler = BackgroundScheduler(timezone=pytz.utc)
 scheduler.start()
 
 
-with open('app_conf.yml', 'r') as f: 
+if "TARGET_ENV" in os.environ and os.environ["TARGET_ENV"] == "test":
+    print("In Test Environment")
+    app_conf_file = "/config/app_conf.yml"
+    log_conf_file = "/config/log_conf.yml"
+else:
+    print("In Dev Environment")
+    app_conf_file = "app_conf.yml"
+    log_conf_file = "log_conf.yml"
+
+with open(app_conf_file, 'r') as f:
     app_config = yaml.safe_load(f.read())
 
-
-with open('log_conf.yml', 'r') as f: 
-    log_config = yaml.safe_load(f.read()) 
+# External Logging Configuration
+with open(log_conf_file, 'r') as f:
+    log_config = yaml.safe_load(f.read())
     logging.config.dictConfig(log_config)
-
+    
 logger = logging.getLogger('basicLogger')
+logger.info("App Conf File: %s" % app_conf_file) 
+logger.info("Log Conf File: %s" % log_conf_file)
 
 
 def populate_stats():
@@ -68,6 +79,7 @@ def populate_stats():
     print("query endpoint 1:", distance_covered_url)
     distance_covered_response = requests.get(distance_covered_url)
     distance_covered_events = distance_covered_response.json()
+    
     logger.debug(f"Distance Covered Response Status Code: {distance_covered_response.status_code}")
     logger.debug(f"Response content: {distance_covered_response.text}")
 
@@ -75,6 +87,7 @@ def populate_stats():
     print("query endpoint 2:", running_pace_url)
     running_pace_response = requests.get(running_pace_url)
     running_pace_events = running_pace_response.json()
+    
     logger.debug(f"Running Pace Response Status Code: {running_pace_response.status_code}")
     logger.debug(f"Response content: {running_pace_response.text}")
   

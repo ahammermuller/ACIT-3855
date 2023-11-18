@@ -49,6 +49,10 @@ services:
     image: receiver:latest
     ports:
       - "8080:8080"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/ubuntu/config/receiver:/config
     depends_on:
       - kafka
 
@@ -56,6 +60,10 @@ services:
     image: storage:latest
     ports:
       - "8090:8090"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/ubuntu/config/storage:/config      
     depends_on:
       - kafka
       - db
@@ -63,6 +71,10 @@ services:
   processing: 
     image: processing:latest
     network_mode: "host"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/ubuntu/config/processing:/config    
     depends_on:
       - storage
 
@@ -70,6 +82,10 @@ services:
     image: audit_log:latest
     ports:
       - "8070:8070"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/ubuntu/config/audit_log:/config      
     depends_on:
       - kafka
 
