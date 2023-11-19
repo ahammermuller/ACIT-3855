@@ -102,6 +102,16 @@ services:
       - "processing"
       - "audit_log"
 
+  health:
+    image: health:latest
+    ports:
+      - "8120:8120"
+    depends_on:
+      - "storage"
+      - "receiver"
+      - "audit_log"
+      - "processing"
+
 volumes:
   my-db:
   processing-db:

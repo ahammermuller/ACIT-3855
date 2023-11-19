@@ -94,6 +94,10 @@ def get_running_pace_reading(index):
     return { "message": "Not Found"}, 404
 
 
+def health():
+    return "audit : Running", 200
+
+
 app = connexion.FlaskApp(__name__, specification_dir='')
 
 CORS(app.app) 

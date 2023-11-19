@@ -215,6 +215,10 @@ def process_messages():
         consumer.commit_offsets()
 
 
+def health():
+    return "audit : Running", 200
+
+
 app = connexion.FlaskApp(__name__, specification_dir='')
 app.add_api("openapi.yaml", 
             strict_validation=True, 

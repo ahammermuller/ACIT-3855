@@ -1,0 +1,49 @@
+openapi: 3.0.0
+info:
+  title: Stats API
+  description: This API receives health information from the services
+  contact:
+    email: ahammermuller@my.bcit.ca
+  version: 1.0.0
+paths: 
+  /health:
+    get:
+      tags:
+      - services
+      summary: get health status
+      operationId: app.get_health
+      description: gets health from services
+      responses:
+        '200':
+          description: service is running.
+          content: 
+            application/json: 
+              schema: 
+                $ref: '#/components/schemas/ReadingStats'
+components: 
+  schemas: 
+    ReadingStats: 
+      required: 
+        - receiver
+        - storage
+        - processing
+        - audit
+        - last_update
+      type: object
+      properties:
+        receiver:
+          type: string
+          example: "Running"
+        storage:
+          type: string
+          example: "Down"
+        processing:
+          type: string
+          example: "Running"
+        audit:
+          type: string
+          example: "Running"
+        last_update:
+          type: string
+          format: date-time
+          example: 2016-08-29T09:12:33Z

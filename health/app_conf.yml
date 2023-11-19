@@ -1,0 +1,11 @@
+version: 1
+datastore:
+  filename: health_data.json
+health_check:
+  interval_sec: 20
+  timeout: 5
+services:
+  receiver: http://18.219.140.116:8080/health
+  storage: http://18.219.140.116:8090/health
+  processing: http://18.219.140.116:8100/health
+  audit: http://18.219.140.116:8070/health

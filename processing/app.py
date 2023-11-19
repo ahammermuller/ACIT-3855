@@ -58,14 +58,12 @@ def populate_stats():
         # If the file exists, read its contents into the 'stats' dictionary
         with open(app_config['datastore']['filename'], 'r') as file:
             stats = json.load(file)
-            print("Path", os.path)
-            print("file", (app_config['datastore']['filename']), "open:", stats)
+
     else:
         # If the file doesn't exist, use default statistics
         stats = default_stats
         with open(app_config['datastore']['filename'], 'w') as file:
             json.dump(stats, file)
-            print("file created", (app_config['datastore']['filename']), "open:", stats)
 
 
     # Get current datetime
@@ -173,6 +171,10 @@ def get_stats():
         # If the file doesn't exist, log error message and return 404
         logger.error("Statistics file does not exist")
         return "Statistics do not exist", 404
+
+
+def health():
+    return "audit : Running", 200
 
 
 def init_scheduler(): 
