@@ -52,44 +52,37 @@ def populate_stats():
     "last_timestamp": "2016-08-29T09:12:33Z"
     }
         
+
         # Check if the JSON file exists
     if os.path.exists(app_config['datastore']['filename']):
         # If the file exists, read its contents into the 'stats' dictionary
         with open(app_config['datastore']['filename'], 'r') as file:
             stats = json.load(file)
-            print("file exist open:", stats)
+            print("Path", os.path)
+            print("file", (app_config['datastore']['filename']), "open:", stats)
     else:
         # If the file doesn't exist, use default statistics
         stats = default_stats
         with open(app_config['datastore']['filename'], 'w') as file:
             json.dump(stats, file)
+            print("file created", (app_config['datastore']['filename']), "open:", stats)
 
 
     # Get current datetime
     old_datetime = stats['last_timestamp']
     current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    print(f"Old Timestamp: {old_datetime}")
-    print(f"Current Timestamp: {current_timestamp}")
-
     # Query the two GET endpoints from Data Store Service
     url = app_config['eventstore']['url']
 
     distance_covered_url = url + "/readings/distance?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
-    print("query endpoint 1:", distance_covered_url)
     distance_covered_response = requests.get(distance_covered_url)
     distance_covered_events = distance_covered_response.json()
     
-    logger.debug(f"Distance Covered Response Status Code: {distance_covered_response.status_code}")
-    logger.debug(f"Response content: {distance_covered_response.text}")
 
     running_pace_url = url + "/readings/pace?timestamp=" + old_datetime + "&end_timestamp=" + current_timestamp
-    print("query endpoint 2:", running_pace_url)
     running_pace_response = requests.get(running_pace_url)
     running_pace_events = running_pace_response.json()
-    
-    logger.debug(f"Running Pace Response Status Code: {running_pace_response.status_code}")
-    logger.debug(f"Response content: {running_pace_response.text}")
   
 
     # Initialize variables
@@ -148,6 +141,7 @@ def populate_stats():
     # Write the updated statistics to the JSON file
     with open(app_config['datastore']['filename'], 'w') as file:
         json.dump(stats, file)
+        print("write stats at:", (app_config['datastore']['filename']))
 
     # Log a DEBUG message with your updated statistics values
     logger.debug(f"Total Distance Covered: {total_distance_covered}, "
