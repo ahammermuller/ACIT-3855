@@ -56,7 +56,6 @@ def populate_health():
 
     for service_name, service_url in app_config['services'].items():
         response = requests.get(service_url, timeout=timeout)
-        logger.info("Response", response)
         logger.info("Recorded status of service %s - URL %s - Status Code: %s", service_name, service_url, response.status_code)
 
         if response.status_code == 200:
