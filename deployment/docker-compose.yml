@@ -104,6 +104,7 @@ services:
 
   health:
     image: health:latest
+    network_mode: "host"
     ports:
       - "8120:8120"
     depends_on:
