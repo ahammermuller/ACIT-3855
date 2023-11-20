@@ -11,7 +11,7 @@ paths:
       tags:
       - services
       summary: get health status
-      operationId: app.get_health_status
+      operationId: app.get_health
       description: gets health from services
       responses:
         '200':
@@ -19,10 +19,10 @@ paths:
           content: 
             application/json: 
               schema: 
-                $ref: '#/components/schemas/ReadingStats'
+                $ref: '#/components/schemas/HealthStats'
 components: 
   schemas: 
-    ReadingStats: 
+    HealthStats: 
       required: 
         - receiver
         - storage

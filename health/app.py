@@ -25,7 +25,7 @@ with open('log_conf.yml', 'r') as f:
 
 logger = logging.getLogger('basicLogger')
 
-def update_health_status():
+def populate_health():
     """Periodically update the health status of services."""
     logger.info("Start Periodic Health Check")
 
@@ -48,7 +48,6 @@ def update_health_status():
         with open(app_config['datastore']['filename'], 'w') as file:
             json.dump(health_stats, file)
 
-    current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     timeout = app_config['health_check']['timeout']
 
     for service_name, service_url in app_config['services'].items():
@@ -61,12 +60,13 @@ def update_health_status():
             default_health[service_name] = "Down"
             logger.error(f"Error checking service {service_name}")
 
+    current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     health_stats['last_update'] = current_timestamp
 
     logger.info("Periodic Health Check completed")
 
 
-def get_health_status():
+def get_health():
     """Get the health status of services."""
 
     logger.info("Request for health status has started")
@@ -89,7 +89,7 @@ def get_health_status():
 
 def init_scheduler(): 
     sched = BackgroundScheduler(daemon=True) 
-    sched.add_job(update_health_status, 
+    sched.add_job(populate_health, 
                   'interval', 
                   seconds=app_config['health_check']['interval_sec']) 
     sched.start()
