@@ -25,6 +25,7 @@ with open('log_conf.yml', 'r') as f:
 
 logger = logging.getLogger('basicLogger')
 
+
 def populate_health():
     """Periodically update the health status of services."""
     logger.info("Start Periodic Health Check")
@@ -116,4 +117,5 @@ app.add_api("openapi.yaml",
 
 
 if __name__ == '__main__':
+    init_scheduler()
     app.run(port=8120)
