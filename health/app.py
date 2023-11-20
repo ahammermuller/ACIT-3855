@@ -39,14 +39,18 @@ def populate_health():
 
         # Check if the JSON file exists
     if os.path.exists(app_config['datastore']['filename']):
+        logger.info("Path exist:", (app_config['datastore']['filename']))
         # If the file exists, read its contents into the 'stats' dictionary
         with open(app_config['datastore']['filename'], 'r') as file:
             health_stats = json.load(file)
+
     else:
         # If the file doesn't exist, use default statistics
         health_stats = default_health
         with open(app_config['datastore']['filename'], 'w') as file:
+            logger.info("Path does not exist:", (app_config['datastore']['filename']))
             json.dump(health_stats, file)
+
 
     timeout = app_config['health_check']['timeout']
 
@@ -55,13 +59,21 @@ def populate_health():
         logger.info(f"Recorded status of service {service_name} - Status Code: {response.status_code}")
 
         if response.status_code == 200:
-            default_health[service_name] = "Running"
+            health_stats[service_name] = "Running"
         else:
-            default_health[service_name] = "Down"
+            health_stats[service_name] = "Down"
             logger.error(f"Error checking service {service_name}")
 
+    
     current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     health_stats['last_update'] = current_timestamp
+
+
+    # Write the updated statistics to the JSON file
+    with open(app_config['datastore']['filename'], 'w') as file:
+        json.dump(health_stats, file)
+        print("write stats at:", (app_config['datastore']['filename']))
+
 
     logger.info("Periodic Health Check completed")
 
@@ -84,6 +96,7 @@ def get_health():
     
     else:
         logger.error("Health status file does not exist")
+        logger.info("Health status file path:", (app_config['datastore']['filename']))
         return "Health status data does not exist", 404
 
 
@@ -106,4 +119,4 @@ app.add_api("openapi.yaml",
 
 
 if __name__ == '__main__':
-    app.run(port=8120, threaded=True)
+    app.run(port=8120)

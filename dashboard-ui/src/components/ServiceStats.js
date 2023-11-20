@@ -3,7 +3,7 @@ import '../App.css';
 
 export default function ServiceStats() {
     const [isLoaded, setIsLoaded] = useState(false);
-    const [healthStatus, setHealthStatus] = useState({});
+    const [HealthStatus, setHealthStatus] = useState({});
     const [error, setError] = useState(null);
 
     const getHealthStatus = () => {
@@ -23,7 +23,7 @@ export default function ServiceStats() {
     };
 
     useEffect(() => {
-        const interval = setInterval(() => getHealthStatus(), 2000); // Update every 2 seconds
+        const interval = setInterval(() => getHealthStatus(), 2000);
         return () => clearInterval(interval);
     }, [getHealthStatus]);
 
@@ -36,12 +36,12 @@ export default function ServiceStats() {
             <div>
                 <h1>Health Status</h1>
                 <ul>
-                    <li>Receiver: {healthStatus['receiver']}</li>
-                    <li>Storage: {healthStatus['storage']}</li>
-                    <li>Processing: {healthStatus['processing']}</li>
-                    <li>Audit: {healthStatus['audit']}</li>
+                    <li>Receiver: {HealthStatus['receiver']}</li>
+                    <li>Storage: {HealthStatus['storage']}</li>
+                    <li>Processing: {HealthStatus['processing']}</li>
+                    <li>Audit: {HealthStatus['audit']}</li>
                 </ul>
-                <h3>Last Update: {healthStatus['last_update']}</h3>
+                <h3>Last Update: {HealthStatus['last_update']}</h3>
             </div>
         );
     }

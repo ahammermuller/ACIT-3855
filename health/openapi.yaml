@@ -19,10 +19,10 @@ paths:
           content: 
             application/json: 
               schema: 
-                $ref: '#/components/schemas/HealthStats'
+                $ref: '#/components/schemas/HealthStatus'
 components: 
   schemas: 
-    HealthStats: 
+    HealthStatus: 
       required: 
         - receiver
         - storage

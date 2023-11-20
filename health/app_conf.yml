@@ -1,6 +1,6 @@
 version: 1
 datastore:
-  filename: health_data.json
+  filename: health.json
 health_check:
   interval_sec: 20
   timeout: 5
