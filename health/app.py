@@ -58,11 +58,20 @@ def populate_health():
         response = requests.get(service_url, timeout=timeout)
         logger.info("Recorded status of service %s - URL %s - Status Code: %s", service_name, service_url, response.status_code)
 
+    try:
+        response = requests.get(service_url, timeout=timeout)
+        logger.info("Recorded status of service %s - URL %s - Status Code: %s - Response: %s",
+                    service_name, service_url, response.status_code, response.text)
+
         if response.status_code == 200:
             health_stats[service_name] = "Running"
         else:
             health_stats[service_name] = "Down"
-            logger.error("Error checking service %s", service_name)
+            logger.error("Error checking service %s. Status Code: %s", service_name, response.status_code)
+
+    except requests.ConnectionError:
+        health_stats[service_name] = "Down"
+        logger.error("Connection error checking service %s", service_name)
 
     current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     health_stats['last_update'] = current_timestamp
