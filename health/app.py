@@ -62,7 +62,7 @@ def populate_health():
         #     logger.info("Recorded status of service %s - URL %s - Status Code: %s - Response: %s",
         #                 service_name, service_url, response.status_code, response.text)
 
-        if response.status_code == 200:
+        if response.ok:
             health_stats[service_name] = "Running"
             logger.info("Recorded status of service %s - URL %s - Status Code: %s - Response: %s", service_name, service_url, response.status_code, response.text)
         else:
