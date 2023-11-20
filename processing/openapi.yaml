@@ -5,7 +5,19 @@ info:
   contact:
     email: ahammermuller@my.bcit.ca
   version: 1.0.0
-paths: 
+paths:
+  /health:
+    get:
+      summary: gets health
+      operationId: app.health
+      description: Gets health status from server
+      responses:
+        '200':
+          description: Service is running
+        '400': 
+          description: Invalid request   
+        '404':
+          description: Service Not Found 
   /stats: 
     get: 
       summary: Gets the event stats 

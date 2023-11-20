@@ -58,12 +58,14 @@ paths:
     get:
       summary: gets health
       operationId: app.health
-      description: Gets health from server
+      description: Gets health status from server
       responses:
         '200':
-          description: 200 request
+          description: Service is running
+        '400': 
+          description: Invalid request   
         '404':
-          description: Not Found
+          description: Service Not Found
 
   /readings/pace:
     get: 

@@ -92,7 +92,19 @@ paths:
                 type: object 
                 properties: 
                   message: 
-                    type: string             
+                    type: string    
+  /health:
+    get:
+      summary: gets health
+      operationId: app.health
+      description: Gets health status from server
+      responses:
+        '200':
+          description: Service is running
+        '400': 
+          description: Invalid request   
+        '404':
+          description: Service Not Found                             
 components:
   schemas:
     DistanceCoveredReading:
