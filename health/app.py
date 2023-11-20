@@ -47,18 +47,17 @@ def populate_health():
     else:
         # If the file doesn't exist, use default statistics and create the file
         health_stats = default_health
-        try:
-            with open(app_config['datastore']['filename'], 'w') as file:
-                logger.info("Health status file does not exist, creating: %s", app_config['datastore']['filename'])
-                json.dump(health_stats, file)
-        except Exception as e:
-            logger.error(f"Error creating health status file: {e}")
+        with open(app_config['datastore']['filename'], 'w') as file:
+            logger.info("Health status file does not exist, creating: %s", app_config['datastore']['filename'])
+            json.dump(health_stats, file)
+
 
     timeout = app_config['health_check']['timeout']
 
     for service_name, service_url in app_config['services'].items():
         response = requests.get(service_url, timeout=timeout)
-        logger.info("Recorded status of service %s - Status Code: %s", service_name, response.status_code)
+        logger.info("Response", response)
+        logger.info("Recorded status of service %s - URL %s - Status Code: %s", service_name, service_url, response.status_code)
 
         if response.status_code == 200:
             health_stats[service_name] = "Running"
