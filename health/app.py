@@ -52,26 +52,20 @@ def populate_health():
             json.dump(health_stats, file)
 
     current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
+    
     timeout = app_config['health_check']['timeout']
 
     for service_name, service_url in app_config['services'].items():
         response = requests.get(service_url, timeout=timeout)
 
-        # try:
-        #     response = requests.get(service_url, timeout=timeout)
-        #     logger.info("Recorded status of service %s - URL %s - Status Code: %s - Response: %s",
-        #                 service_name, service_url, response.status_code, response.text)
-
         if response.ok:
-            health_stats[service_name] = "Running"
+            status = "Running"
             logger.info("Recorded status of service %s - URL %s - Status Code: %s - Response: %s", service_name, service_url, response.status_code, response.text)
         else:
-            health_stats[service_name] = "Down"
+            status = "Down"
             logger.error("Error checking service %s. Status Code: %s", service_name, response.status_code)
-
-        # except requests.ConnectionError:
-        #     health_stats[service_name] = "Down"
-        #     logger.error("Connection error checking service %s", service_name)
+        
+        health_stats[service_name] = status
 
     health_stats['last_update'] = current_timestamp
 
