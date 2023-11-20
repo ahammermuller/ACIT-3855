@@ -54,6 +54,16 @@ paths:
                 properties: 
                   message: 
                     type: string
+  /health:
+    get:
+      summary: gets health
+      operationId: app.health
+      description: Gets health from server
+      responses:
+        '200':
+          description: 200 request
+        '404':
+          description: Not Found
 
   /readings/pace:
     get: 
