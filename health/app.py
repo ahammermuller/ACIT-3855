@@ -51,7 +51,7 @@ def populate_health():
             logger.info("Health status file does not exist, creating: %s", app_config['datastore']['filename'])
             json.dump(health_stats, file)
 
-
+    current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     timeout = app_config['health_check']['timeout']
 
     for service_name, service_url in app_config['services'].items():
@@ -73,7 +73,6 @@ def populate_health():
             health_stats[service_name] = "Down"
             logger.error("Connection error checking service %s", service_name)
 
-    current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     health_stats['last_update'] = current_timestamp
 
     # Write the updated statistics to the JSON file
