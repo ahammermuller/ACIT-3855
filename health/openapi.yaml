@@ -11,7 +11,7 @@ paths:
       tags:
       - services
       summary: get health status
-      operationId: app.get_health
+      operationId: app.get_health_status
       description: gets health from services
       responses:
         '200':
