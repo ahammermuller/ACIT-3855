@@ -39,30 +39,31 @@ def populate_health():
 
         # Check if the JSON file exists
     if os.path.exists(app_config['datastore']['filename']):
-        logger.info("Path exist:", (app_config['datastore']['filename']))
+        logger.info("Health status file exist: %s", app_config['datastore']['filename'])
         # If the file exists, read its contents into the 'stats' dictionary
         with open(app_config['datastore']['filename'], 'r') as file:
             health_stats = json.load(file)
 
     else:
-        # If the file doesn't exist, use default statistics
-        health_stats = default_health
-        with open(app_config['datastore']['filename'], 'w') as file:
-            logger.info("Path does not exist:", (app_config['datastore']['filename']))
-            json.dump(health_stats, file)
+        try:
+            with open(app_config['datastore']['filename'], 'w') as file:
+                logger.info("Health status file does not exist: %s", app_config['datastore']['filename'])
+                json.dump(health_stats, file)
+        except Exception as e:
+            logger.error(f"Error creating health status file: {e}")
 
 
     timeout = app_config['health_check']['timeout']
 
     for service_name, service_url in app_config['services'].items():
         response = requests.get(service_url, timeout=timeout)
-        logger.info(f"Recorded status of service {service_name} - Status Code: {response.status_code}")
+        logger.info("Recorded status of service %s - Status Code: %s", service_name, response.status_code)
 
         if response.status_code == 200:
             health_stats[service_name] = "Running"
         else:
             health_stats[service_name] = "Down"
-            logger.error(f"Error checking service {service_name}")
+            logger.error("Error checking service %s", service_name)
 
     
     current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -72,8 +73,6 @@ def populate_health():
     # Write the updated statistics to the JSON file
     with open(app_config['datastore']['filename'], 'w') as file:
         json.dump(health_stats, file)
-        print("write stats at:", (app_config['datastore']['filename']))
-
 
     logger.info("Periodic Health Check completed")
 
@@ -88,7 +87,7 @@ def get_health():
         with open(app_config['datastore']['filename'], 'r') as file:
             health_data = json.load(file)
         
-        logger.debug(f"Health status data: {health_data}")
+        logger.debug("Health status data: %s", health_data)
 
         logger.info("Request for health status has completed")
         
@@ -96,7 +95,7 @@ def get_health():
     
     else:
         logger.error("Health status file does not exist")
-        logger.info("Health status file path:", (app_config['datastore']['filename']))
+        logger.error("Health status file does not exist: %s", app_config['datastore']['filename'])
         return "Health status data does not exist", 404
 
 
