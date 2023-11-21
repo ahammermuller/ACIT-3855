@@ -60,7 +60,7 @@ def populate_health():
             start_time = datetime.datetime.now()
             response = requests.get(service_url, timeout=timeout)
             end_time = datetime.datetime.now()
-            time_dif = (end_time - start_time)
+            time_dif = (end_time - start_time).total_seconds()
 
             logger.debug("Response content for service %s - URL %s: %s", service_name, service_url, response.text)
 
