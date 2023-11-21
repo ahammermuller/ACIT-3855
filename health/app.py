@@ -56,24 +56,28 @@ def populate_health():
     timeout = app_config['health_check']['timeout']
 
     for service_name, service_url in app_config['services'].items():
-        response = requests.get(service_url, timeout=timeout)
-        logger.debug("Response content for service %s - URL %s: %s", service_name, service_url, response.text)
-
         try:
-            if response.ok:
+            start_time = datetime.datetime.now()
+            response = requests.get(service_url, timeout=timeout)
+            end_time = datetime.datetime.now()
+            time_dif = (end_time - start_time).total_seconds()
+
+            logger.debug("Response content for service %s - URL %s: %s", service_name, service_url, response.text)
+
+            if response.status_code == 200:
                 status = "Running"
                 logger.info("Recorded status of service %s - URL %s - Status Code: %s - Response: %s", service_name, service_url, response.status_code, response.text)
             else:
                 status = "Down"
                 logger.error("Error checking service %s. Status Code: %s", service_name, response.status_code)
-        except requests.Timeout:
+
+            if time_dif > timeout:
+                status = "Down"
+                logger.error("Timeout checking service %s. Elapsed Time: %s seconds", service_name, time_dif)
+
+        except requests.exceptions.RequestException as e:
             status = "Down"
-            logger.error("Timeout checking service %s. The request timed out.", service_name)    
-            continue    
-        except Exception as e:
-            status = "Down"
-            logger.error("Error checking service %s: %s", service_name, str(e))
-            continue
+            logger.error("Error checking service %s. Exception: %s", service_name, str(e))
 
         health_stats[service_name] = status
         logger.info("%s status: %s", service_name, status)
