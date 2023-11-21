@@ -65,8 +65,10 @@ def populate_health():
             else:
                 status = "Down"
                 logger.error("Error checking service %s. Status Code: %s", service_name, response.status_code)
-        except:
+        except requests.RequestException as e:
             status = "Down"
+            logger.error("Connection error checking service %s: %s", service_name, str(e))
+
         
         health_stats[service_name] = status
         logger.info("%s status: %s", service_name, status)
