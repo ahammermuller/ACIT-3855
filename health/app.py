@@ -72,10 +72,9 @@ def populate_health():
         except Exception as e:
             status = "Down"
             logger.error("Error checking service %s: %s", service_name, str(e))
-
-        
-        health_stats[service_name] = status
-        logger.info("%s status: %s", service_name, status)
+        finally:
+            health_stats[service_name] = status
+            logger.info("%s status: %s", service_name, status)
 
     health_stats['last_update'] = current_timestamp
 
