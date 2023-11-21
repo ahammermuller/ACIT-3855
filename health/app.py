@@ -68,13 +68,15 @@ def populate_health():
                 logger.error("Error checking service %s. Status Code: %s", service_name, response.status_code)
         except requests.Timeout:
             status = "Down"
-            logger.error("Timeout checking service %s. The request timed out.", service_name)        
+            logger.error("Timeout checking service %s. The request timed out.", service_name)    
+            continue    
         except Exception as e:
             status = "Down"
             logger.error("Error checking service %s: %s", service_name, str(e))
-        finally:
-            health_stats[service_name] = status
-            logger.info("%s status: %s", service_name, status)
+            continue
+
+        health_stats[service_name] = status
+        logger.info("%s status: %s", service_name, status)
 
     health_stats['last_update'] = current_timestamp
 
