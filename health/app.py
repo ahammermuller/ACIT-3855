@@ -57,6 +57,7 @@ def populate_health():
 
     for service_name, service_url in app_config['services'].items():
         response = requests.get(service_url, timeout=timeout)
+        logger.debug("Response content for service %s - URL %s: %s", service_name, service_url, response.text)
 
         try:
             if response.ok:
@@ -68,9 +69,9 @@ def populate_health():
         except requests.Timeout:
             status = "Down"
             logger.error("Timeout checking service %s. The request timed out.", service_name)        
-        except requests.RequestException as e:
+        except Exception as e:
             status = "Down"
-            logger.error("Connection error checking service %s: %s", service_name, str(e))
+            logger.error("Error checking service %s: %s", service_name, str(e))
 
         
         health_stats[service_name] = status
