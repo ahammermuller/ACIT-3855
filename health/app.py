@@ -58,14 +58,18 @@ def populate_health():
     for service_name, service_url in app_config['services'].items():
         response = requests.get(service_url, timeout=timeout)
 
-        if response.ok:
-            status = "Running"
-            logger.info("Recorded status of service %s - URL %s - Status Code: %s - Response: %s", service_name, service_url, response.status_code, response.text)
-        else:
+        try:
+            if response.ok:
+                status = "Running"
+                logger.info("Recorded status of service %s - URL %s - Status Code: %s - Response: %s", service_name, service_url, response.status_code, response.text)
+            else:
+                status = "Down"
+                logger.error("Error checking service %s. Status Code: %s", service_name, response.status_code)
+        except:
             status = "Down"
-            logger.error("Error checking service %s. Status Code: %s", service_name, response.status_code)
         
         health_stats[service_name] = status
+        logger.info("%s status: %s", service_name, status)
 
     health_stats['last_update'] = current_timestamp
 
@@ -102,7 +106,7 @@ def init_scheduler():
     sched = BackgroundScheduler(daemon=True) 
     sched.add_job(populate_health, 
                   'interval', 
-                  seconds=app_config['health_check']['interval_sec']) 
+                  seconds=app_config['health_check']['interval']) 
     sched.start()
 
 
