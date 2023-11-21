@@ -46,7 +46,8 @@ connected = False
 while current_retry_count < max_retries and not connected:
     try:
         client = KafkaClient(hosts=hostname)
-        topic = client.topics[str.encode(app_config["events"]["topic"])]        
+        topic = client.topics[str.encode(app_config["events"]["topic"])]
+        producer = topic.get_sync_producer()
         connected = True
         logger.info("Successfully connected to Kafka.")        
     except Exception as e:
@@ -69,13 +70,11 @@ def report_distance_covered_reading(body):
     # client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}")
     # topic = client.topics[str.encode(app_config["events"]["topic"])]
 
-    producer = topic.get_sync_producer()
     msg = { "type": "distance_covered", 
            "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), 
            "payload": body } 
-    msg_str = json.dumps(msg) 
     producer.produce(msg_str.encode('utf-8'))
-
+    msg_str = json.dumps(msg) 
     logger.info(f"Returned event {event_name} response (ID: {trace_id}) with status code 201")
 
     return NoContent, 201
@@ -90,8 +89,6 @@ def report_running_pace_reading(body):
 
     #client = KafkaClient(hosts=f"{app_config['events']['hostname']}:{app_config['events']['port']}") 
     # topic = client.topics[str.encode(app_config["events"]["topic"])]
-
-    producer = topic.get_sync_producer()
 
     msg = { "type": "running_pace", 
            "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), 
