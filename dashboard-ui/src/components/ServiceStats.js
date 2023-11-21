@@ -3,7 +3,7 @@ import '../App.css';
 
 export default function ServiceStats() {
     const [isLoaded, setIsLoaded] = useState(false);
-    const [HealthStatus, setHealthStatus] = useState({});
+    const [health, setHealthStatus] = useState({});
     const [error, setError] = useState(null);
 
     const getHealthStatus = () => {
@@ -36,12 +36,12 @@ export default function ServiceStats() {
             <div>
                 <h1>Health Status</h1>
                 <ul>
-                    <li>Receiver: {HealthStatus['receiver']}</li>
-                    <li>Storage: {HealthStatus['storage']}</li>
-                    <li>Processing: {HealthStatus['processing']}</li>
-                    <li>Audit: {HealthStatus['audit']}</li>
+                    <li>Receiver: {health['receiver']}</li>
+                    <li>Storage: {health['storage']}</li>
+                    <li>Processing: {health['processing']}</li>
+                    <li>Audit: {health['audit']}</li>
                 </ul>
-                <h3>Last Update: {HealthStatus['last_update']}</h3>
+                <h3>Last Update: {health['last_update']}</h3>
             </div>
         );
     }
