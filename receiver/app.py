@@ -73,8 +73,8 @@ def report_distance_covered_reading(body):
     msg = { "type": "distance_covered", 
            "datetime": datetime.datetime.now().strftime("%Y-%m-%dT%H:%M:%SZ"), 
            "payload": body } 
-    producer.produce(msg_str.encode('utf-8'))
     msg_str = json.dumps(msg) 
+    producer.produce(msg_str.encode('utf-8'))
     logger.info(f"Returned event {event_name} response (ID: {trace_id}) with status code 201")
 
     return NoContent, 201
