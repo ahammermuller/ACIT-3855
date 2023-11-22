@@ -112,6 +112,7 @@ services:
     depends_on:
       - "processing"
       - "audit_log"
+      - "health"
 
   health:
     image: health:latest
