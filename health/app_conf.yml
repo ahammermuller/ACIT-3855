@@ -5,7 +5,7 @@ health_check:
   interval: 20
   timeout: 5
 services:
-  receiver: http://18.219.140.116:8080/health
-  storage: http://18.219.140.116:8090/health
-  processing: http://18.219.140.116:8100/health
-  audit: http://18.219.140.116:8070/health
+  receiver: http://18.219.140.116/receiver/health
+  storage: http://18.219.140.116/storage/health
+  processing: http://18.219.140.116/processing/health
+  audit: http://18.219.140.116/audit_log/health
