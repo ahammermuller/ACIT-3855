@@ -7,7 +7,7 @@ export default function ServiceStats() {
     const [error, setError] = useState(null);
 
     const getHealthStatus = () => {
-        fetch(`http://18.219.140.116:8120/health`)
+        fetch(`http://18.219.140.116/health`)
             .then(res => res.json())
             .then(
                 (result) => {

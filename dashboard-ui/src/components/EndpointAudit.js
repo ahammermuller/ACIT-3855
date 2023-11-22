@@ -9,7 +9,7 @@ export default function EndpointAudit(props) {
     const [index, setIndex] = useState(null); //lab 9
 
     const getAudit = () => {
-        fetch(`http://18.219.140.116:8070/${props.endpoint}?index=${rand_val}`)
+        fetch(`http://18.219.140.116/audit_log/${props.endpoint}?index=${rand_val}`)
             .then(res => res.json())
             .then((result)=>{
 				console.log("Received Audit Results for " + props.endpoint)
