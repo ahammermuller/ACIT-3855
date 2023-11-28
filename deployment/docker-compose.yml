@@ -85,7 +85,7 @@ services:
     volumes:
       - /home/ubuntu/config/processing:/config
       - /home/ubuntu/logs:/logs
-      - processing-db:/data
+      - processing:/data
     depends_on:
       - storage
 
@@ -119,7 +119,13 @@ services:
     ports:
       - "8120"
     networks:
-      - "api.network"    
+      - "api.network"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/ubuntu/config/health:/config
+      - /home/ubuntu/logs:/logs
+      - health:/data        
     depends_on:
       - "storage"
       - "receiver"
