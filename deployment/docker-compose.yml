@@ -125,7 +125,6 @@ services:
     volumes:
       - /home/ubuntu/config/health:/config
       - /home/ubuntu/logs:/logs
-      - health-db:/health_data
     depends_on:
       - "storage"
       - "receiver"
