@@ -85,7 +85,7 @@ services:
     volumes:
       - /home/ubuntu/config/processing:/config
       - /home/ubuntu/logs:/logs
-      - processing:/data
+      - processing-db:/data
     depends_on:
       - storage
 
@@ -125,7 +125,7 @@ services:
     volumes:
       - /home/ubuntu/config/health:/config
       - /home/ubuntu/logs:/logs
-      - health:/health_data
+      - health-db:/health_data
     depends_on:
       - "storage"
       - "receiver"
