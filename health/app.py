@@ -50,18 +50,18 @@ def populate_health():
         "last_update": "2022-03-22T11:12:23"
     }
 
-    # Check if the JSON file exists
+        # Check if the JSON file exists
     if os.path.exists(app_config['datastore']['filename']):
-        logger.info("Health status file exists: %s", app_config['datastore']['filename'])
         # If the file exists, read its contents into the 'stats' dictionary
         with open(app_config['datastore']['filename'], 'r') as file:
             health_stats = json.load(file)
+
     else:
-        # If the file doesn't exist, use default statistics and create the file
+        # If the file doesn't exist, use default statistics
         health_stats = default_health
         with open(app_config['datastore']['filename'], 'w') as file:
-            logger.info("Health status file does not exist, creating: %s", app_config['datastore']['filename'])
             json.dump(health_stats, file)
+
 
     current_timestamp = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     
